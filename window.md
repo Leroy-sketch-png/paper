@@ -1,9 +1,9 @@
-# Research Window 001 — Second Loop
+# Research Window 001 — Fourth Loop
 
 ## Standalone Brief
 
-This document is a standalone upward-facing research briefing, now in its second adversarial loop.
-Loop 1 introduced vulnerabilities per claim. Loop 2 escalates: flaky-test label contamination is now a first-class attack on the paper's core learning assumptions, transfer hardness is distinguished from transfer promise, and LLM-augmented representations are reframed as a winner-landscape shift rather than an accuracy boost.
+This document is a standalone upward-facing research briefing, now through four adversarial loops.
+Loop 1 introduced vulnerabilities per claim. Loop 2 escalated: flaky-test label contamination as a first-class attack on the paper's core learning assumptions, transfer hardness distinguished from transfer promise, LLM-augmented representations reframed as a winner-landscape shift. Loop 3 grounded the research: source paper replication package located, FAST non-ML baseline ported and verified, FALCON (ICST 2025) and LRTS (ISSTA 2024) registered as adjacent artifacts. Loop 4 integrates the full artifact ecosystem: DeepOrder registered, Extension Tracks given empirical thresholds, experimental grid codified, and the career-risk framing introduced — winning only ML-vs-ML is no longer sufficient when FALCON and heuristics are in the comparison pool.
 Designed to be forwarded without local workspace context.
 
 ## Source
@@ -11,6 +11,29 @@ Designed to be forwarded without local workspace context.
 - Paper title: Revisiting Machine Learning based Test Case Prioritization for Continuous Integration
 - Source identifier: 2311.13413v1
 - Research topic: machine-learning-based test case prioritization for continuous integration
+- **Replication package: Zenodo record 7036507** (`https://zenodo.org/records/7036507`). Contains full code (RL algorithms: ACER-PA, PPO2-PO, PPO1-LI, COLEMAN; SL algorithms: MART, RankNet, RankBoost, CA, L-MART, DeepOrder), data (11 projects, original + SMOTE-preprocessed), and results (RQ1–RQ3 + threats to validity). Adoption note: uses Understand tool for dependency analysis — requires separate license.
+- **Live artifact: FAST repo (icse18-FAST/FAST) — cloned locally at `FAST/`, ported to Python 3.10.** Implements 12 TCP algorithms: FAST-pw, FAST-one, FAST-log, FAST-sqrt, FAST-all (similarity-based, black-box and white-box), plus GT, GA, GA-S, ART-F, ART-D (white-box), STR, I-TSD (black-box). ICSE 2018. These are non-ML, similarity-based baselines — directly relevant as the pre-ML TCP landscape that the source paper's 11 ML techniques are competing against. **Verified output: `python py/prioritize.py flex_v3 bbox FAST-pw 3` → APFD ~0.878–0.948.**
+- **Adjacent artifact: FALCON** (ICST 2025, Zenodo 18897073). Submodular optimization + UniXcoder embeddings for TCP. 16.4% higher median APFD over similarity-based methods (0.731 vs 0.628) on Defects4J. Directly relevant to Direction C (LLM-augmented representations). FALCON establishes that semantic code embeddings + diversity optimization outperform FAST-style similarity in the same benchmark space.
+- **Adjacent artifact: LRTS** (ISSTA 2024, Zenodo 12662090, GitHub: lrtsuser/LRTS). Long-Running Test Suites dataset: **21,255 CI builds, 57,437 test-suite runs, average 6.5 hours per run**, 10 large-scale Java projects, explicitly analyzing flaky tests and long-running suites. Key finding: simple policies (prioritize faster tests that recently failed) can outperform sophisticated ML in some contexts — a direct challenge to any narrative that ML complexity yields reliable gains. Directly relevant to Directions A (flaky-test-aware TCP) and D (Android/mobile CI replication as contrast case).
+- **Adjacent artifact: DeepOrder** (ICSME 2021, GitHub: AizazSharif/DeepOrder-ICSME21). Deep learning TCP for CI: regression-style neural model consuming historical test execution records. Already outperforms some prior approaches on efficiency and detection. Jointly with FALCON, establishes that the representation-learning space for TCP is **not underexplored** — the interesting question is no longer whether deep/semantic models beat classic heuristics but how they behave under flaky labels, federated constraints, and long-running suites.
+
+## Lab Status (as of May 2, 2026)
+
+| Item | Status | Location / Notes |
+|---|---|---|
+| Source paper | In hand | `2311.13413v1.pdf`, converted to `.md` |
+| Source paper replication package | Located | Zenodo 7036507 — not yet downloaded |
+| FAST (ICSE 2018) non-ML baseline | **Running** | `FAST/` — Python 3.10 port complete; FAST-pw APFD ~0.878–0.948 on flex\_v3 |
+| FALCON (ICST 2025) artifact | Located | Zenodo 18897073 — not yet downloaded |
+| LRTS (ISSTA 2024) dataset | Located | Zenodo 12662090 / GitHub lrtsuser/LRTS — not yet downloaded |
+| DeepOrder (ICSME 2021) artifact | Located | GitHub AizazSharif/DeepOrder-ICSME21 — not yet cloned |
+| TCP-CI dataset | Located (reference) | Cited in federated pretraining track; exact Zenodo/GitHub not yet confirmed |
+| IDoFT flaky-test dataset | Not yet found | Needed for Direction A (flaky-test-aware TCP) |
+| Android open-source CI data | Not yet found | Needed for Direction D |
+| Full FAST baseline table | Not yet run | All 10 subjects × bbox + wbox — ~5 min automated |
+| Paper skeleton / draft | Not started | All four directions confirmed active |
+
+**Highest-readiness direction:** Direction B (federated pretraining) — source paper's strongest clue, replication package in hand, concept grounded. **Highest-urgency gap:** Direction A flaky-test dataset (IDoFT) — the label-realism attack needs empirical grounding before it can anchor a motivation section.
 
 ## Scope In Plain Terms
 
@@ -19,9 +42,14 @@ Designed to be forwarded without local workspace context.
 - SL = supervised learning.
 - RL = reinforcement learning.
 - rAPFD = rectified Average Percentage of Faults Detected — the paper's proposed replacement for prior evaluation metrics.
+- APFD = Average Percentage of Faults Detected — original metric; known fairness and discernment problems in CI.
 - MART = SL-based technique. Best on less-failure subjects. Lowest overhead. Safest practical default.
 - ACER-PA = RL-based technique. Best on more-failure subjects. High effectiveness, high runtime cost.
 - PPO1-LI = RL-based technique. Can become inapplicable when prediction time exceeds total test execution time.
+- FAST = similarity-based non-ML TCP framework (ICSE 2018). 12 algorithms. Strong APFD at minimal cost. The pre-ML baseline tier.
+- FALCON = submodular + UniXcoder embedding TCP (ICST 2025). Currently the highest-bar semantic baseline: 0.731 median APFD on Defects4J.
+- DeepOrder = deep learning TCP for CI (ICSME 2021). Historical test execution records → regression-style neural ranking.
+- LRTS = Long-Running Test Suites dataset (ISSTA 2024). 21,255 CI builds, 57,437 runs, avg 6.5 h/run. Explicit flaky-test analysis.
 - The paper compares 11 ML-based TCP methods under one controlled setup on 11 open-source GitHub projects.
 - It evaluates three dimensions: effectiveness, efficiency, and practical applicability.
 
@@ -36,6 +64,7 @@ Designed to be forwarded without local workspace context.
 - **Critical posture**: The paper solved the comparability problem better than prior work. It did not solve the realism problem. It standardized the battlefield — but the battlefield was too clean, too open-source-centric, and too historically stable to support strong deployment-level prescriptions.
 - **Flaky escalation**: A study on Chrome's CI history reports 99.58% of test failures were flaky. If that kind of label contamination appears broadly, history-based TCP methods may be learning from noise, not regression signal. This is not a future-work footnote — it attacks the paper's learning and evaluation logic at the root.
 - **LLM shift**: Richer semantic representations may change which methods are robust, which transfer, and which justify overhead. Old method rankings may be feature-era artifacts, not durable truths.
+- **Non-ML baseline risk**: FAST already achieves high APFD cheaply. FALCON beats FAST by 16.4% using semantic embeddings. LRTS shows simple heuristics outperform ML in some large-scale real contexts. A new paper that wins only against other ML methods while losing to FALCON or well-tuned heuristics has not contributed to the right battle — this is the primary career risk for any TCP paper in 2026.
 
 ## What The Paper Genuinely Establishes
 
@@ -109,6 +138,8 @@ The paper proposes rAPFD to replace APFD, NAPFD, and NRPA, arguing prior metrics
 - MART can save more than 95% of time-to-first-failure in most subjects.
 - PPO1-LI: prediction overhead can exceed total test execution time in some subjects — practically inapplicable.
 - **External signal — Chrome CI study: 99.58% of observed test failures were flaky.** If that rate applies broadly, the paper's learned failure signals may substantially reflect nondeterministic noise rather than true regressions.
+- **LRTS dataset scale:** 21,255 CI builds, 57,437 test-suite runs, average 6.5 hours per run. Simple "recent-failure + fast-test" heuristics outperform sophisticated ML in some LRTS contexts — directly challenging the assumption that ML complexity yields reliable gains on realistic datasets.
+- **FALCON competitive bar:** 0.731 median APFD vs. 0.628 for similarity-based methods on Defects4J. Any new LLM/embedding method must clear FALCON, not just the source paper's 11 ML methods.
 
 ## Canonical Evidence Snips
 
@@ -158,6 +189,31 @@ The paper proposes rAPFD to replace APFD, NAPFD, and NRPA, arguing prior metrics
 
 > To learn how ML-based TCP techniques perform in CI, we present the first comprehensive study on 11 GitHub projects, including 11 state-of-the-art ML-based TCP techniques. In our study, we systematically analyze the effectiveness, efficiency, and applicability of existing TCP techniques and get a series of findings and actionable suggestions.
 
+## External Evidence Snips
+
+These are not from the source paper. They are the external findings that most directly challenge or bound the source paper's claims.
+
+### LRTS: Simple Heuristics vs. ML on Realistic CI
+
+> Simple policies such as prioritizing faster tests that recently failed can outperform more sophisticated techniques in some contexts.
+— *Revisiting Test-Case Prioritization on Long-Running Test Suites*, ISSTA 2024 (lrtsuser/LRTS, Zenodo 12662090)
+
+**Why this snip matters:** LRTS's test suites average 6.5 hours per run across 21,255 CI builds. When ML methods lose to heuristics at that scale and duration, no paper can safely skip heuristic baselines.
+
+### FALCON: Semantic + Submodular TCP Bar
+
+> FALCON achieves 16.4% higher median APFD than state-of-the-art similarity-based methods (0.731 vs. 0.628) while requiring only 4.45s median runtime. Among five embedding models, UniXcoder with cosine similarity provides the best effectiveness-efficiency trade-off.
+— *FALCON: Efficient Test Case Prioritization via Submodular Optimization*, ICST 2025 (Zenodo 18897073)
+
+**Why this snip matters:** This is the current semantic baseline ceiling. An LLM-augmented method must beat 0.731 median APFD on Defects4J or justify itself by robustness, not raw score.
+
+### Chrome CI: Flaky Failure Prevalence
+
+> 99.58% of test failures observed in Chrome's CI history were flaky.
+— External citation (Chrome CI study; referenced in third-loop memo)
+
+**Why this snip matters:** If this rate generalizes even partially, history-based TCP methods are training and evaluating on contaminated labels. Every APFD number in the source paper is conditionally valid at best.
+
 ## Operational Implications
 
 - Use MART as the safest practical baseline when failure-rate regime is unknown or when operational overhead matters.
@@ -166,6 +222,10 @@ The paper proposes rAPFD to replace APFD, NAPFD, and NRPA, arguing prior metrics
 - Do not trust cross-paper comparisons that rely on NRPA-style evaluation without metric validity checks.
 - Measure prediction latency against actual selected-test execution time before calling a method deployable in CI.
 - Separate effectiveness, efficiency, and deployability in any analysis — they do not naturally align.
+- **FAST baseline is runnable locally** (`python py/prioritize.py <subject> bbox FAST-pw 50`). Subjects available: flex_v3, grep_v3, gzip_v1, make_v1, sed_v6, chart_v0, closure_v0, lang_v0, math_v0, time_v0. Verified: flex_v3 FAST-pw APFD ~0.878–0.948. Use FAST-pw as the non-ML similarity baseline when benchmarking any new TCP contribution.
+- **Source paper replication package (Zenodo 7036507) is available** — code, data, and results for all 11 ML-TCP methods. Download before constructing baselines to avoid reimplementing existing infrastructure. Note the Understand tool dependency for feature extraction.
+- **FALCON (Zenodo 18897073)** demonstrates that UniXcoder embeddings + submodular optimization already outperform similarity-based TCP by 16.4% median APFD in Defects4J. This sets the minimum bar for any LLM representation argument in Direction C — "better than FAST" is not enough; "better than FALCON" is the live threshold.
+- **LRTS (Zenodo 12662090 / GitHub lrtsuser/LRTS)** provides 21,255 CI builds / 57,437 runs of long-running Java suites — highest-quality publicly available dataset for flaky-test interaction, multi-method comparison, and mobile CI contrast work.
 
 ## Hidden Assumptions To Surface
 
@@ -179,7 +239,7 @@ These are implicit in the paper's design and should be made explicit in any foll
 
 ## Flaky-Test Escalation
 
-This is the deepest new attack from the second loop. It is not a future-work gap — it is a challenge to the paper's core learning and evaluation logic.
+This is the deepest structural attack on the source paper. It is not a future-work gap — it is a challenge to the paper's core learning and evaluation logic.
 
 **The problem:** The source paper treats failing tests largely as meaningful training and evaluation signals. But CI failure labels can be heavily contaminated by flaky, nondeterministic, or infrastructure-dependent failures. A study of Chrome's historical CI reports 99.58% of test failures were flaky. If similar contamination exists in other large CI ecosystems, a history-based prioritization model may be learning to exploit recurring noise patterns rather than predict regressions.
 
@@ -192,7 +252,7 @@ This is the deepest new attack from the second loop. It is not a future-work gap
 
 **For your paper:** Move flaky-test analysis out of threats-to-validity into the main motivation section. Frame it as a label-realism problem that qualifies every effectiveness number in the source paper.
 
-
+## Hard Reviewer Questions
 
 - Why should a failure-rate split from 11 subjects be treated as a general selection rule rather than a benchmark-specific pattern?
 - How robust are the reported winners to hyperparameter tuning, feature substitutions, seed variation, and implementation-level optimization?
@@ -200,20 +260,35 @@ This is the deepest new attack from the second loop. It is not a future-work gap
 - Are pretraining gains still present when source projects are intentionally dissimilar from the target?
 - How would results change under flaky-test-heavy CI, mobile CI, or industrial pipelines with heterogeneous hardware?
 - Is the RL vs. SL trade-off intrinsic to learning paradigm, or partly an artifact of specific implementations and compute budgets?
+- Does the new contribution beat FALCON (0.731 median APFD, Defects4J) — not just the source paper's 11 ML methods? If not, what robustness or realism advantage justifies it?
+- Are simple heuristics (shortest-tests-first, recent-failure-first) included as baselines? Omitting them is a reviewer red flag given LRTS's findings.
 
 ## Extension Tracks (Where A New Paper Beats This One)
 
 The strongest move is not to claim this paper is wrong. The stronger move: argue its benchmark exposed the right problem structure but stopped before the most important realism variables were introduced.
 
-| Extension track | Strongest claim | Why it can beat the source paper |
-|---|---|---|
-| Flaky-test-aware TCP | Historical TCP effectiveness is overstated when failure labels are noisy. | Attacks the label-quality assumption under the benchmark's learning and evaluation logic directly. |
-| Federated or privacy-preserving pretraining | Transfer remains valuable even when projects cannot share raw CI histories. | Preserves the paper's strongest clue while adding a realistic organizational constraint the paper never tested. |
-| LLM-augmented representations | Semantic representations can **reopen the winner landscape**, not just boost scores. If MART or ACER-PA wins under a given feature pipeline, LLM-derived signals may change which methods are robust, which transfer, and which justify overhead. | Challenges whether old method rankings are method properties or feature-era artifacts. |
-| Android / mobile CI replication | Benchmark conclusions weaken when CI labels, runtimes, and scheduling differ materially from open-source desktop/server projects. | Attacks external validity directly and brings the study into modern applied settings with harder label noise. |
-| Hyperparameter-robust benchmarking | Fair benchmarks separate technique quality from default settings. | Challenges whether current rankings reflect method design or setup decisions. |
+| Direction | Extension track | Strongest claim | Why it can beat the source paper | Minimum threshold (artifact-grounded) |
+|---|---|---|---|---|
+| **A** | Flaky-test-aware TCP | Historical TCP effectiveness is overstated when failure labels are noisy. | Attacks the label-quality assumption under the benchmark's learning and evaluation logic directly. | Show where performance drops when flaky and confounding failures are separated; must at least match simple "recent-failure + fast-test" heuristics on LRTS (Chrome study + LRTS). |
+| **B** | Federated / privacy-preserving pretraining | Transfer remains valuable even when projects cannot share raw CI histories. | Preserves the paper's strongest clue while adding a realistic organizational constraint the paper never tested. | Federated / restricted-data MART variants must retain a substantial share of the original 80%-vs-50% optimal-sequence gain without pooling raw test histories (Zenodo 7036507 + TCP-CI dataset). |
+| **C** | LLM-augmented representations | Semantic representations can **reopen the winner landscape** — not just boost scores, but change which methods are robust, which transfer, and which justify overhead. | Challenges whether old method rankings are method properties or feature-era artifacts. | Must outperform FALCON (0.731 median APFD on Defects4J) or demonstrate robustness advantages (under flaky labels or cross-project transfer) that justify higher cost. Beating only the source paper's 11 methods is insufficient (FALCON + DeepOrder). |
+| **D** | Android / mobile CI replication | Benchmark conclusions weaken when CI labels, runtimes, and scheduling differ materially from open-source desktop/server projects. | Attacks external validity directly and brings the study into modern applied settings with harder label noise. | Show that at least one source-paper conclusion (winner identity, overhead ranking, or transfer gain) changes or reverses under mobile conditions; use LRTS as the long-running contrast case. |
+| **E** | Hyperparameter-robust benchmarking | Fair benchmarks separate technique quality from default settings. | Challenges whether current rankings reflect method design or setup decisions. | Demonstrate ranking instability under varied hyperparameter configurations; show that the MART vs. ACER-PA split is configuration-sensitive. |
 
 **Highest-yield combination:** Flaky-test-aware federated pretraining with semantic representations, evaluated in Android or mobile CI. Aggressive but coherent — targets label realism, data-sharing realism, and feature realism simultaneously.
+
+### Required Experimental Grid
+
+Any new paper must put all baseline tiers on the same board or reviewers will ask. The minimum grid:
+
+1. **Non-ML similarity baselines** — FAST-pw and FAST-log (already running locally)
+2. **Heuristic / greedy baselines** — shortest-tests-first, most-recent-failure-first (industry-standard)
+3. **Semantic / embedding baselines** — FALCON (UniXcoder + submodular)
+4. **Deep learning TCP** — DeepOrder
+5. **Original ML/RL methods** — MART, ACER-PA, and at minimum the top-3 from Zenodo 7036507
+6. **New contribution** — federated, flaky-aware, or LLM-augmented variants
+
+Winning only battle 5 vs. 6 is the career risk: the community no longer cares if a new ML method beats other ML methods while losing to FALCON or well-tuned heuristics on realistic datasets.
 
 ## Concrete Rewrite Instructions
 
@@ -224,6 +299,7 @@ For any paper that builds on this source, these five edits separate a credible f
 3. **Pretraining as a constrained systems question.** Foreground cross-project governance and privacy barriers. Federated learning, privacy-preserving transfer, or parameter-sharing baselines are the natural next design space.
 4. **LLMs as representation-shift argument.** Do not frame LLM integration as "we also tried embeddings." Argue that richer features may change which methods are robust, which transfer, and which justify overhead — reopening old comparative conclusions rather than just topping leaderboards.
 5. **Downgrade deployment language.** Remove or qualify any sentence that implies the source benchmark's recommendations survive noisy labels, heterogeneous CI conditions, or modern feature pipelines without further validation.
+6. **Experimental grid discipline.** Include all five baseline tiers: non-ML similarity (FAST), heuristic/greedy, semantic (FALCON), deep learning TCP (DeepOrder), and original ML/RL methods. A paper that only wins against other ML methods while losing to FALCON or heuristics on realistic datasets has not contributed to the right battle.
 
 ## Cautions
 
@@ -234,7 +310,7 @@ For any paper that builds on this source, these five edits separate a credible f
 
 ## One-Line Carry-Upward Summary
 
-The paper's core clue is that ML-based TCP in CI must be selected by failure-rate regime and runtime budget — not by global leaderboard — and cross-subject pretraining is the strongest practical lever; but the benchmark's clean historical labels, open-source scope, and pre-LLM feature assumptions mean its recommendations are a credible starting point, not a deployment prescription, and the most important follow-on move is to attack label realism, data-sharing constraints, and representation-era assumptions simultaneously.
+The source paper is a strong unified benchmark but a narrow one: carefully executed within a particular era of features and datasets, strongest when read as a within-study conclusion, weakest when its method rankings are treated as broadly deployable truths; the surrounding ecosystem — non-ML baselines (FAST), semantic methods (FALCON, DeepOrder), and long-running flaky-aware datasets (LRTS) — now supplies both higher baselines and harder questions, and the most credible follow-on move is not to revisit again but to **reconcile benchmark conclusions with realism constraints** along four axes: label quality (flakiness), data-governance (federated pretraining), representation shift (LLM embeddings), and external validity (mobile/Android CI).
 
 ## Research Clue Tags
 
@@ -256,4 +332,19 @@ The paper's core clue is that ML-based TCP in CI must be selected by failure-rat
 - representation-shift
 - external-validity
 - android-mobile-ci
-- hyperparameter-robustness
+- replication-package-zenodo-7036507
+- falcon-icst2025
+- lrts-issta2024
+- submodular-tcp
+- unixcoder-embeddings
+- deeporder-icsme2021
+- tcp-ci-dataset
+- non-ml-baseline-risk
+- transfer-hardness-lrts
+- experimental-grid
+- reconcile-benchmark-realism
+- fast
+- fast-pw
+- similarity-based-tcp
+- non-ml-baseline
+- icse18
