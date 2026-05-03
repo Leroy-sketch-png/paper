@@ -1,4 +1,6 @@
 \documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 \usepackage[a4paper,margin=1in]{geometry}
 \usepackage{setspace}
 \usepackage{booktabs}
@@ -104,12 +106,12 @@ Test case prioritization in CI arranges a test suite so that failure-revealing t
 Cruciani et al. [ICSE 2018] introduced FAST, a family of similarity-based methods that prioritize by maximum diversity over code or coverage fingerprints without a learning phase. FAST-pw (pairwise similarity) and FAST-log (log-distance variant) serve as the canonical non-ML ceiling in this paper. We reproduce both on 10 subjects (five SIR, five Defects4J) using 30 independent runs per SIR subject and the full per-bug-version evaluation for Defects4J (n=70–1,010 evaluations per D4J subject across all bug versions). FAST-pw achieves mean APFD of 0.71–0.97 on SIR (flex=0.901±0.055, grep=0.958±0.017, gzip=0.729±0.057, make=0.712±0.166, sed=0.974±0.015) and 0.42–0.55 on Defects4J (chart=0.419±0.265, closure=0.510±0.325, lang=0.432±0.254, math=0.553±0.278, time=0.501±0.308). FAST-log achieves 0.72–0.96 on SIR (flex=0.892±0.047, grep=0.959±0.019, gzip=0.910±0.017, make=0.718±0.151, sed=0.942±0.025) and 0.47–0.62 on Defects4J (chart=0.511±0.301, closure=0.481±0.292, lang=0.466±0.300, math=0.617±0.313, time=0.545±0.314). The high Defects4J variance (stdev 0.25–0.40) reflects genuine per-bug-version heterogeneity — each bug version presents a different fault with different test sensitivity — rather than estimation noise. An oracle Failure-Frequency-First (FFF) baseline, which sorts tests by ground-truth fault detection count and is not deployable without fault knowledge, achieves 0.92–0.999 on SIR and 0.93–0.99 on Defects4J, establishing the practical ceiling. A Random-30 lower bound (30 fixed-seed shuffles) yields 0.69–0.96 on SIR and 0.50–0.59 on Defects4J. FAST exceeds random on all SIR subjects; on Defects4J, FAST-pw is within random range on three of five subjects, consistent with the known difficulty of diversity-based methods when only one test per bug version fails.
 
 
-The source paper [2311.13413v1, Zhao et al., ICSME 2023] provides the unified benchmark that motivates this work. It evaluates 11 ML-TCP techniques across 11 open-source Java/C subjects using rAPFD, finding that no method dominates universally: MART and its variants lead in high-failure-rate regimes, while ACER-PA and PPO-based methods are more competitive under low failure rates. Cross-subject pretraining lifts the share of builds achieving an optimal prioritization order from approximately 50\\% to 80\\% for the leading method. DeepOrder [AizazSharif, ICSME 2021] contributes a neural regression approach trained directly on CI execution records and remains an important deep-learning reference point. Together these results establish the framework this paper extends: the benchmark is technically sound but its conclusions are conditioned on assumptions about label quality, data availability, and feature representation that we make explicit.
+The source paper [2311.13413v1, Zhao et al., ICSME 2023] provides the unified benchmark that motivates this work. It evaluates 11 ML-TCP techniques across 11 open-source Java/C subjects using rAPFD, finding that no method dominates universally: MART and its variants lead in high-failure-rate regimes, while ACER-PA and PPO-based methods are more competitive under low failure rates. Cross-subject pretraining lifts the share of builds achieving an optimal prioritization order from approximately 50\% to 80\% for the leading method. DeepOrder [AizazSharif, ICSME 2021] contributes a neural regression approach trained directly on CI execution records and remains an important deep-learning reference point. Together these results establish the framework this paper extends: the benchmark is technically sound but its conclusions are conditioned on assumptions about label quality, data availability, and feature representation that we make explicit.
 
 
 \subsection{2.2 Flaky Tests in CI}
 
-A flaky test is one whose outcome is non-deterministic under identical code, producing both passing and failing results across runs without any intervening source change. Flakiness arises from concurrency bugs, test-order dependency, environment coupling, network and timing assumptions, and resource contention. Its prevalence in industrial CI is severe: Lam et al. report that 99.58\\% of observed test failures in the Chrome project were attributable to flaky tests rather than genuine regressions, which means virtually every false-positive signal in a prioritized suite degrades downstream decision-making.
+A flaky test is one whose outcome is non-deterministic under identical code, producing both passing and failing results across runs without any intervening source change. Flakiness arises from concurrency bugs, test-order dependency, environment coupling, network and timing assumptions, and resource contention. Its prevalence in industrial CI is severe: Lam et al. report that 99.58\% of observed test failures in the Chrome project were attributable to flaky tests rather than genuine regressions, which means virtually every false-positive signal in a prioritized suite degrades downstream decision-making.
 
 
 The IDoFT dataset [Wing Lam et al., ICST 2019, GitHub: TestingResearchIllinois/idoft] provides per-test flakiness labels for open-source Java and Python projects, categorized as order-dependent (OD), implementation-dependent (ID), and non-implementation-order (NIO). Cross-referencing IDoFT against the 11 subjects of the source paper reveals a critical constraint: 9 of 11 subjects have no IDoFT-labeled tests, and only jedis (2 ID-category tests) and spring-data-redis (7 ID-category tests) have any flaky label coverage. This sparse overlap means IDoFT cannot serve as the primary flaky-label source for a replication study; instead, it establishes an evidence floor and motivates supplementary strategies such as re-execution protocols and CI-log-based heuristic detection.
@@ -120,7 +122,7 @@ The LRTS study [ISSTA 2024, Zenodo 12662090] examines 21,255 builds and 57,437 t
 
 \subsection{2.3 Transfer Learning and Privacy in ML-TCP}
 
-The source paper's pretraining result — that cross-subject pretraining raises optimal-sequence frequency from approximately 50\\% to 80\\% — is the most practically consequential finding in the benchmark, because it implies that organizations with test history from any Java project can improve a newly observed subject's prioritizer without waiting for local data accumulation. However, this result was demonstrated under centralized data sharing: all subjects' execution logs were pooled to train the pretrained model. In industrial deployment, test execution data frequently cannot leave organizational boundaries due to intellectual property agreements, regulatory constraints, or competitive sensitivity. No prior work has evaluated whether the pretraining gain is preserved under a federated protocol that exchanges only model parameters rather than raw data.
+The source paper's pretraining result — that cross-subject pretraining raises optimal-sequence frequency from approximately 50\% to 80\% — is the most practically consequential finding in the benchmark, because it implies that organizations with test history from any Java project can improve a newly observed subject's prioritizer without waiting for local data accumulation. However, this result was demonstrated under centralized data sharing: all subjects' execution logs were pooled to train the pretrained model. In industrial deployment, test execution data frequently cannot leave organizational boundaries due to intellectual property agreements, regulatory constraints, or competitive sensitivity. No prior work has evaluated whether the pretraining gain is preserved under a federated protocol that exchanges only model parameters rather than raw data.
 
 
 Federated learning [McMahan et al., ICML 2017] addresses this by having each participant train locally and contribute only gradient updates or parameter increments, which are aggregated centrally (e.g., via FedAvg) without raw data exposure. Federated approaches have been applied to software defect prediction and code smell detection in SE research, demonstrating that model quality degradation under federation is acceptable for practical purposes when participants share a common feature space. The key open question for ML-TCP is the transfer retention ratio: what fraction of the centralized pretraining gain survives when raw log sharing is prohibited? This paper provides the first federated ML-TCP baseline and quantifies this ratio across subjects varying in organizational similarity.
@@ -131,7 +133,7 @@ Federated learning [McMahan et al., ICML 2017] addresses this by having each par
 Handcrafted CI features — test duration, historical pass/fail, code change proximity metrics, cyclomatic complexity — have been the dominant input representation for ML-TCP methods. This is partly a data-availability artifact: structured CI logs are easier to extract than source-level semantic features, and the feature pipelines used in the source paper depend on the Understand static analysis tool, which itself requires access to compilable source. The representational assumptions baked into these pipelines may cause method rankings to reflect the information ceiling of handcrafted features rather than the intrinsic capacity of the learning algorithms.
 
 
-DeepOrder [ICSME 2021] moves closer to the code by training a neural regression model directly on CI execution records. FALCON [ICST 2025, Zenodo 18897073] takes a stronger position: it encodes test bodies using UniXcoder (a code language model) and applies submodular facility-location optimization to maximize coverage diversity in the selected prefix. The paper abstract reports median APFD 0.731 for FALCON versus 0.628 for the strongest similarity-based baseline over 288 fault versions. After obtaining the artifact package, we extracted \texttt{output/comprehensive\\_results\\_all\\_projects.csv} and verified six-project Defects4J summaries (Chart, Closure, Lang, Math, Mockito, Time). In that summary, FALCON-unixcoder-cosine reports APFD values of 0.726 (Chart), 0.700 (Closure), 0.754 (Lang), 0.622 (Math), 0.736 (Mockito), and 0.794 (Time), with project-median 0.731. The same summary reports FAST-pw at 0.612, 0.620, 0.505, 0.559, 0.657, and 0.593 (project-median 0.602), showing that artifact summary aggregation is not numerically identical to the abstract baseline statement but preserves the same directional conclusion: FALCON outperforms FAST-style similarity baselines on these projects. Beyond UniXcoder, candidate code language models for representation substitution include CodeBERT and CodeT5, and FALCON itself evaluates five embedding variants, providing a reference point for the sensitivity of ranking under representation shift. A systematic study of how semantic embeddings change the comparative rankings of all 11 source-paper methods — as distinct from evaluating a new method end-to-end — has not been performed.
+DeepOrder [ICSME 2021] moves closer to the code by training a neural regression model directly on CI execution records. FALCON [ICST 2025, Zenodo 18897073] takes a stronger position: it encodes test bodies using UniXcoder (a code language model) and applies submodular facility-location optimization to maximize coverage diversity in the selected prefix. The paper abstract reports median APFD 0.731 for FALCON versus 0.628 for the strongest similarity-based baseline over 288 fault versions. After obtaining the artifact package, we extracted \texttt{output/comprehensive\_results\_all\_projects.csv} and verified six-project Defects4J summaries (Chart, Closure, Lang, Math, Mockito, Time). In that summary, FALCON-unixcoder-cosine reports APFD values of 0.726 (Chart), 0.700 (Closure), 0.754 (Lang), 0.622 (Math), 0.736 (Mockito), and 0.794 (Time), with project-median 0.731. The same summary reports FAST-pw at 0.612, 0.620, 0.505, 0.559, 0.657, and 0.593 (project-median 0.602), showing that artifact summary aggregation is not numerically identical to the abstract baseline statement but preserves the same directional conclusion: FALCON outperforms FAST-style similarity baselines on these projects. Beyond UniXcoder, candidate code language models for representation substitution include CodeBERT and CodeT5, and FALCON itself evaluates five embedding variants, providing a reference point for the sensitivity of ranking under representation shift. A systematic study of how semantic embeddings change the comparative rankings of all 11 source-paper methods — as distinct from evaluating a new method end-to-end — has not been performed.
 
 
 \subsection{2.5 Mobile and Android CI}
@@ -175,7 +177,7 @@ Dataset selection follows the principle of maximum artifact continuity with the 
 \textbf{Dataset} & \textbf{Purpose} & \textbf{Subjects} & \textbf{CI builds} & \textbf{Notes} \\
 \hline
 \endhead
-Source paper dataset (Zenodo 7036507) & Baseline replication & 11 open-source Java/C & 800 commits × 11 & Requires Understand + Ranklib \\
+Source paper dataset (Zenodo 7036507) & Baseline replication & 11 open-source Java/C & 800 commits $\times$ 11 & Requires Understand + Ranklib \\
 \hline
 IDoFT (TestingResearchIllinois/idoft) & Flaky label feasibility check & Java/Maven, Java/Gradle, Python & N/A (per-test labels) & Cross-reference confirms sparse overlap with source-paper subjects; use as coverage evidence, not primary label source \\
 \hline
@@ -228,7 +230,7 @@ Metric selection follows the source paper's primary choice to maintain comparabi
 \item \textbf{NAPFD} (secondary): for compatibility with prior work
 \item \textbf{Prediction overhead}: signature time + prioritization time vs. commit interval
 \item \textbf{Label-cleaned APFD} [RQ1]: rAPFD recomputed after removing flaky labels from ground truth
-\item \textbf{Transfer retention} [RQ2]: (federated APFD − no-pretraining APFD) / (centralized APFD − no-pretraining APFD)
+\item \textbf{Transfer retention} [RQ2]: (federated APFD $-$ no-pretraining APFD) / (centralized APFD $-$ no-pretraining APFD)
 \end{itemize}
 
 
@@ -240,7 +242,7 @@ Metric selection follows the source paper's primary choice to maintain comparabi
 Machine learning models trained on CI history learn from labels that record which tests failed on which commits. If those failures are non-deterministic — flaky — the label is not evidence of a regression; it is noise that may be correlated with test scheduling patterns, execution order, or environmental state rather than code defects. ML-TCP methods that weight historically-failing tests more heavily are most exposed: they may preferentially schedule tests that have appeared in the training signal for reasons that have nothing to do with code change impact.
 
 
-The scale of flakiness in industrial CI is not marginal. The Chrome study reports that 99.58\\% of observed test failures are attributable to flaky tests rather than genuine regressions. Even in open-source projects, flakiness rates at the 10–40\\% level have been documented. The IDoFT dataset [Wing Lam et al., ICST 2019] provides independently verified flaky-test labels for Java and Python open-source projects, categorized as order-dependent (OD), implementation-dependent (ID), and non-infrastructure-order (NIO). OD tests fail when run in isolation but pass in a specific ordering; ID tests fail due to implementation bugs in the test itself or a transitive dependency; NIO tests exhibit environmental coupling that is harder to eliminate. Each category generates a different contamination pattern in CI failure logs.
+The scale of flakiness in industrial CI is not marginal. The Chrome study reports that 99.58\% of observed test failures are attributable to flaky tests rather than genuine regressions. Even in open-source projects, flakiness rates at the 10–40\% level have been documented. The IDoFT dataset [Wing Lam et al., ICST 2019] provides independently verified flaky-test labels for Java and Python open-source projects, categorized as order-dependent (OD), implementation-dependent (ID), and non-infrastructure-order (NIO). OD tests fail when run in isolation but pass in a specific ordering; ID tests fail due to implementation bugs in the test itself or a transitive dependency; NIO tests exhibit environmental coupling that is harder to eliminate. Each category generates a different contamination pattern in CI failure logs.
 
 
 For the source paper's benchmark, the critical finding from our IDoFT cross-reference is that 9 of 11 subjects have zero IDoFT-labeled tests, and the two with any coverage (jedis: 2 ID-category tests; spring-data-redis: 7 ID-category tests) have counts that are negligible relative to their full suite sizes. This is not evidence that those subjects are flaky-free — it is evidence that IDoFT's labeling effort has not reached them. The source paper does not report a flaky-filtering step, which means the reported APFD numbers on all 11 subjects should be treated as upper bounds on clean-label performance. Direction A operationalizes this as a measurement task: construct the best available flaky-label subset for each subject via multiple complementary strategies, compute delta-APFD per method, and determine whether the source paper's regime taxonomy is stable or provisional under realistic label assumptions.
@@ -277,7 +279,7 @@ For the source paper's benchmark, the critical finding from our IDoFT cross-refe
 
 \subsection{5.1 Motivation}
 
-The source paper's pretraining result is the most operationally consequential finding in the benchmark: cross-subject pretraining lifts the frequency with which MART achieves an optimal test ordering from approximately 50\\% to 80\\%. This is a large gain in practical terms, as it means that in roughly 30 additional commits per hundred, the pretrained model surfaces a failure-revealing test in the earliest position rather than deferring it. The recommendation implied by this result — pretrain on any available Java CI history before deploying — is sound under the study's data-sharing model, where all subjects' execution logs were pooled without restriction.
+The source paper's pretraining result is the most operationally consequential finding in the benchmark: cross-subject pretraining lifts the frequency with which MART achieves an optimal test ordering from approximately 50\% to 80\%. This is a large gain in practical terms, as it means that in roughly 30 additional commits per hundred, the pretrained model surfaces a failure-revealing test in the earliest position rather than deferring it. The recommendation implied by this result — pretrain on any available Java CI history before deploying — is sound under the study's data-sharing model, where all subjects' execution logs were pooled without restriction.
 
 
 Industrial deployment is rarely this permissive. Test execution logs contain information about which tests exist, which fail, at what frequency, and under what commit patterns. For organizations with proprietary codebases, these logs constitute sensitive intellectual property. For organizations in regulated industries — finance, healthcare, defense software — data governance policies may prohibit sharing logs with external parties regardless of organizational interest. For organizations that compete on software quality, sharing detailed failure histories with a shared model trainer is equivalent to sharing engineering velocity data with a competitor. The source paper does not address any of these constraints because its data came from public repositories; but the practitioners most likely to deploy ML-TCP at scale operate under exactly these constraints.
@@ -298,7 +300,7 @@ Federated learning [McMahan et al., 2017] addresses this by restricting the comm
 \subsection{5.3 Expected Findings}
 
 \begin{itemize}[leftmargin=*]
-\item \textbf{Hypothesis B1:} Federated pretraining retains ≥ 70\\% of the centralized transfer gain relative to no-pretraining baseline.
+\item \textbf{Hypothesis B1:} Federated pretraining retains $\geq$ 70\% of the centralized transfer gain relative to no-pretraining baseline.
 \item \textbf{Hypothesis B2:} Transfer breaks faster when source subjects are intentionally dissimilar to target (different language, failure rate, CI frequency).
 \item \textbf{Hypothesis B3:} Federated overhead is dominated by communication rounds, not local training time — acceptable for CI frequency timescales.
 \end{itemize}
@@ -348,9 +350,9 @@ representation effect; re-running with full contextual vectors via PyTorch is th
 highest-priority next step.
 \end{quote}
 
-\textbf{Method.} 2,938 test cases across five SIR subjects (flex\\_v3, grep\\_v3, gzip\\_v1,
+\textbf{Method.} 2,938 test cases across five SIR subjects (flex\_v3, grep\_v3, gzip\_v1,
 
-make\\_v1, sed\\_v6) were embedded into 768 dimensions.  Three rankers were trained:
+make\_v1, sed\_v6) were embedded into 768 dimensions.  Three rankers were trained:
 
 centroid-similarity (no supervised learning), L2-regularised logistic regression (300
 
@@ -366,24 +368,24 @@ APFD from 30 independent runs.
 
 \begin{longtable}{|p{0.15\linewidth}|p{0.15\linewidth}|p{0.15\linewidth}|p{0.15\linewidth}|p{0.15\linewidth}|p{0.15\linewidth}|}
 \hline
-\textbf{Subject} & \textbf{Centroid} & \textbf{Lin-Reg} & \textbf{MLP} & \textbf{FAST-pw} & \textbf{ΔAPFD (MLP−pw)} \\
+\textbf{Subject} & \textbf{Centroid} & \textbf{Lin-Reg} & \textbf{MLP} & \textbf{FAST-pw} & \textbf{$\Delta$APFD (MLP$-$pw)} \\
 \hline
 \endfirsthead
 \hline
-\textbf{Subject} & \textbf{Centroid} & \textbf{Lin-Reg} & \textbf{MLP} & \textbf{FAST-pw} & \textbf{ΔAPFD (MLP−pw)} \\
+\textbf{Subject} & \textbf{Centroid} & \textbf{Lin-Reg} & \textbf{MLP} & \textbf{FAST-pw} & \textbf{$\Delta$APFD (MLP$-$pw)} \\
 \hline
 \endhead
-flex\\_v3 & 0.4379 & 0.4443 & 0.4592 & 0.9070 & −0.4478 \\
+flex\_v3 & 0.4379 & 0.4443 & 0.4592 & 0.9070 & $-$0.4478 \\
 \hline
-grep\\_v3 & 0.3532 & 0.3550 & 0.3937 & 0.9621 & −0.5684 \\
+grep\_v3 & 0.3532 & 0.3550 & 0.3937 & 0.9621 & $-$0.5684 \\
 \hline
-gzip\\_v1 & 0.1587 & 0.1596 & 0.3306 & 0.7313 & −0.4007 \\
+gzip\_v1 & 0.1587 & 0.1596 & 0.3306 & 0.7313 & $-$0.4007 \\
 \hline
-make\\_v1 & 0.2690 & 0.2681 & 0.6485 & 0.7309 & −0.0824 \\
+make\_v1 & 0.2690 & 0.2681 & 0.6485 & 0.7309 & $-$0.0824 \\
 \hline
-sed\\_v6 & 0.7870 & 0.8025 & 0.8352 & 0.9773 & −0.1421 \\
+sed\_v6 & 0.7870 & 0.8025 & 0.8352 & 0.9773 & $-$0.1421 \\
 \hline
-\textbf{Mean} & 0.4012 & 0.4059 & 0.5334 & 0.8617 & \textbf{−0.3283} \\
+\textbf{Mean} & 0.4012 & 0.4059 & 0.5334 & 0.8617 & \textbf{$-$0.3283} \\
 \hline
 \end{longtable}
 
@@ -393,40 +395,40 @@ sed\\_v6 & 0.7870 & 0.8025 & 0.8352 & 0.9773 & −0.1421 \\
 
 \begin{longtable}{|p{0.31\linewidth}|p{0.31\linewidth}|p{0.31\linewidth}|}
 \hline
-\textbf{Subject} & \textbf{Spearman ρ} & \textbf{p-value} \\
+\textbf{Subject} & \textbf{Spearman $\rho$} & \textbf{p-value} \\
 \hline
 \endfirsthead
 \hline
-\textbf{Subject} & \textbf{Spearman ρ} & \textbf{p-value} \\
+\textbf{Subject} & \textbf{Spearman $\rho$} & \textbf{p-value} \\
 \hline
 \endhead
-flex\\_v3 & −0.007 & 0.898 \\
+flex\_v3 & $-$0.007 & 0.898 \\
 \hline
-grep\\_v3 & −0.068 & 0.067 \\
+grep\_v3 & $-$0.068 & 0.067 \\
 \hline
-gzip\\_v1 & +0.031 & 0.664 \\
+gzip\_v1 & +0.031 & 0.664 \\
 \hline
-make\\_v1 & −0.011 & 0.828 \\
+make\_v1 & $-$0.011 & 0.828 \\
 \hline
-sed\\_v6 & −0.247 & 0.001 \\
+sed\_v6 & $-$0.247 & 0.001 \\
 \hline
-\textbf{Mean} & \textbf{−0.060} & — \\
+\textbf{Mean} & \textbf{$-$0.060} & — \\
 \hline
 \end{longtable}
 
 
 \textbf{Statistical summary.}
 
-Mean ΔAPFD = −0.3283 (95\\% bootstrap CI [−0.4866, −0.1699]; CI excludes zero).
+Mean $\Delta$APFD = $-$0.3283 (95\% bootstrap CI [$-$0.4866, $-$0.1699]; CI excludes zero).
 
-Cohen's d = −1.94 (large effect).  Mean Spearman ρ = −0.060 (low ranking correlation).
+Cohen's d = $-$1.94 (large effect).  Mean Spearman $\rho$ = $-$0.060 (low ranking correlation).
 
 
 \textbf{Interpretation.}  Vocabulary-anchored BPE embeddings perform significantly worse
 
 than FAST-pw handcrafted features across all five SIR subjects.  The APFD gap is
 
-statistically significant and practically large.  The near-zero Spearman ρ confirms
+statistically significant and practically large.  The near-zero Spearman $\rho$ confirms
 
 that the two families generate fundamentally different test orderings — embedding
 
@@ -451,7 +453,7 @@ effect ceiling.
 \subsection{6.4 Tables and Figures}
 
 \begin{itemize}[leftmargin=*]
-\item \textit{(Table C1 and C2 above are generated from phase3\\_results/phase3\\_apfd\\_results.json and phase4\\_results/phase4\\_correlation.json)}
+\item \textit{(Table C1 and C2 above are generated from phase3\_results/phase3\_apfd\_results.json and phase4\_results/phase4\_correlation.json)}
 \item \textbf{Figure C1 (planned):} APFD vs. embedding quality level (BPE-projection → full UniXcoder → FALCON) — requires torch install to complete.
 \item \textbf{Table C3 (planned):} Method ranking before and after representation shift on Defects4J subjects — pending shared subjects with FALCON.
 \end{itemize}
@@ -502,7 +504,7 @@ No prior ML-TCP study has evaluated recommendations on a confirmed Android CI da
 
 \subsection{8.1 The Label-Realism Problem}
 
-The central empirical question of Direction A is not whether flaky tests contaminate CI labels — that is well-established — but whether the contamination is large enough, and sufficiently correlated with method behavior, to change which method a practitioner should select. The Chrome evidence (99.58\\% of observed failures flaky) establishes a plausible upper bound on contamination in industrial settings. Our cross-reference against IDoFT shows that the source paper's benchmark subjects sit at the opposite extreme: 9 of 11 have zero IDoFT label coverage, and the two exceptions (jedis: 2 ID-category tests; spring-data-redis: 7 ID-category tests) have negligible counts relative to suite sizes. This gap means the source paper's reported APFD numbers are not demonstrably contamination-inflated by IDoFT evidence — but it equally means they are not demonstrably clean.
+The central empirical question of Direction A is not whether flaky tests contaminate CI labels — that is well-established — but whether the contamination is large enough, and sufficiently correlated with method behavior, to change which method a practitioner should select. The Chrome evidence (99.58\% of observed failures flaky) establishes a plausible upper bound on contamination in industrial settings. Our cross-reference against IDoFT shows that the source paper's benchmark subjects sit at the opposite extreme: 9 of 11 have zero IDoFT label coverage, and the two exceptions (jedis: 2 ID-category tests; spring-data-redis: 7 ID-category tests) have negligible counts relative to suite sizes. This gap means the source paper's reported APFD numbers are not demonstrably contamination-inflated by IDoFT evidence — but it equally means they are not demonstrably clean.
 
 
 The practical implication is that the benchmark delivers regime-conditional recommendations on labels whose quality is unknown. If flaky contamination is uniform across methods and subjects, rankings are stable but all absolute APFD values are overestimates. If contamination correlates with method behavior — for example, if methods that preferentially schedule historically-failing tests amplify flaky positives more than coverage-diversity methods — then rankings themselves are unreliable. RQ1 is designed to distinguish these cases by constructing flaky-label subsets via re-execution and CI-log mining where IDoFT is absent, then computing delta-APFD (raw minus cleaned) per method. Methods with the largest delta are those most exposed to contamination amplification and whose placement in the source paper's regime taxonomy should be treated as provisional.
@@ -510,7 +512,7 @@ The practical implication is that the benchmark delivers regime-conditional reco
 
 \subsection{8.2 Transfer Beyond Open Source}
 
-The source paper's pretraining result is operationally compelling: an organization can acquire 80\\% of a method's optimal behavior by pretraining on any available Java CI history before observing the target project, versus 50\\% without pretraining. This makes pretraining a near-mandatory component of any production ML-TCP deployment. Direction B's finding — that federated pretraining retains a substantial fraction of this gain without raw log sharing — changes the scope of who can benefit. If the transfer retention ratio is high (Hypothesis B1: ≥ 70\\%), the pretraining advantage is accessible to organizations under data governance constraints, including those in regulated industries where pooling test execution records with external parties is prohibited.
+The source paper's pretraining result is operationally compelling: an organization can acquire 80\% of a method's optimal behavior by pretraining on any available Java CI history before observing the target project, versus 50\% without pretraining. This makes pretraining a near-mandatory component of any production ML-TCP deployment. Direction B's finding — that federated pretraining retains a substantial fraction of this gain without raw log sharing — changes the scope of who can benefit. If the transfer retention ratio is high (Hypothesis B1: $\geq$ 70\%), the pretraining advantage is accessible to organizations under data governance constraints, including those in regulated industries where pooling test execution records with external parties is prohibited.
 
 
 The retention ratio is not expected to be equal across all subjects. Subjects that are dissimilar to the federation members in failure rate, CI frequency, and language feature distribution should show lower retention, because the federated model receives less of the task-relevant signal that centralized pooling would have provided. Our subject-similarity analysis (Table B2) maps this degradation curve and yields a practical decision boundary: below a similarity threshold, federated pretraining does not justify its coordination overhead, and local bootstrapping (random or heuristic initialization) is the appropriate default. The LRTS dataset, with its long-running and high-noise characteristics, is used to test retention under the hardest within-Java transfer condition available without Android data.
@@ -562,7 +564,7 @@ The conditional-validity map that emerges from the four directions is not a refu
 Flaky-label contamination (RQ1) threatens absolute APFD values on all 11 source-paper subjects; IDoFT's sparse overlap with those subjects means this threat is not yet quantified, and Direction A provides the first systematic bound. Methods that amplify historical failure signals — the history-based ML/RL family — are more exposed to contamination inflation than diversity-based baselines such as FAST, which means the apparent lead of MART over FAST on contaminated labels may be narrower than reported under clean labels.
 
 
-Data governance constraints (RQ2) threaten the deployability of the most practically significant finding: the 50\\%-to-80\\% pretraining gain. The federated pretraining protocol in Direction B demonstrates the first governance-compatible path to cross-subject transfer. The transfer retention ratio determines whether this path is practically useful; at high retention (≥70\\%), the pretraining advantage is preserved without raw-data sharing, and the recommendation upgrades from "requires data pooling" to "achievable under federation." At low retention, the recommendation degrades to "local bootstrapping only," which substantially lowers the actionable benefit of the benchmark for industrial teams.
+Data governance constraints (RQ2) threaten the deployability of the most practically significant finding: the 50\%-to-80\% pretraining gain. The federated pretraining protocol in Direction B demonstrates the first governance-compatible path to cross-subject transfer. The transfer retention ratio determines whether this path is practically useful; at high retention ($\geq$70\%), the pretraining advantage is preserved without raw-data sharing, and the recommendation upgrades from "requires data pooling" to "achievable under federation." At low retention, the recommendation degrades to "local bootstrapping only," which substantially lowers the actionable benefit of the benchmark for industrial teams.
 
 
 Representation shift (RQ3) threatens the durability of method rankings beyond the 2023 feature pipeline. FALCON's performance under LLM embeddings establishes that a representation-modernized approach can exceed the best source-paper methods on shared subjects. Whether the source-paper methods themselves benefit sufficiently from LLM features to preserve their relative order — or whether the MART vs. ACER-PA split is a feature-era artifact — is a question with concrete practical consequences. Practitioners who have adopted the source paper's regime-based recommendations and are now deploying in LLM-feature environments need this answer, and Direction C provides it.
@@ -585,7 +587,7 @@ Taken together, the four directions reframe ML-TCP evaluation from leaderboard c
 \item [LRTS] ISSTA 2024, Zenodo 12662090 / GitHub lrtsuser/LRTS — Revisiting Test-Case Prioritization on Long-Running Test Suites
 \item [DeepOrder] ICSME 2021, GitHub AizazSharif/DeepOrder-ICSME21 — DeepOrder: Deep Learning for Test Case Prioritization in Continuous Integration Testing
 \item [IDoFT] Wing Lam et al., ICST 2019, GitHub TestingResearchIllinois/idoft — A Large-Scale Longitudinal Study of Flaky Tests
-\item [Chrome flaky study] TBD — source for 99.58\\% statistic
+\item [Chrome flaky study] TBD — source for 99.58\% statistic
 \item [Source paper replication package] Zenodo 7036507
 \end{itemize}
 
