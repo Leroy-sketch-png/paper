@@ -20,7 +20,7 @@ Designed to be forwarded without local workspace context.
 
 - **Live artifact: FAST repo (icse18-FAST/FAST) — cloned locally at `FAST/`, ported to Python 3.10.** Implements 12 TCP algorithms: FAST-pw, FAST-one, FAST-log, FAST-sqrt, FAST-all (similarity-based, black-box and white-box), plus GT, GA, GA-S, ART-F, ART-D (white-box), STR, I-TSD (black-box). ICSE 2018. These are non-ML, similarity-based baselines — directly relevant as the pre-ML TCP landscape that the source paper's 11 ML techniques are competing against. **Verified output: `python py/prioritize.py flex_v3 bbox FAST-pw 3` → APFD ~0.878–0.948.**
 
-- **Adjacent artifact: FALCON** (ICST 2025, Zenodo 18897073). Submodular optimization + UniXcoder embeddings for TCP. 16.4% higher median APFD over similarity-based methods (0.731 vs 0.628) on Defects4J. **Open access confirmed (CC-BY 4.0): `falcon.zip` (24.1 MB), freely downloadable without login.** Covers 6 Defects4J projects: Chart, Closure, Lang, Math, Mockito, Time — 5 of 6 overlap with our FAST subjects. Contains FAST-pw/log/one/sqrt/all baselines alongside FALCON/GRAPHCUT/LOGDET variants with 5 embedding models × 2 distance metrics. `comprehensive_results_all_projects.csv` is directly importable for baseline comparison. Published March 2026. Directly relevant to Direction C (LLM-augmented representations). Sets the semantic baseline ceiling that any new representation method must clear.
+- **Adjacent artifact: FALCON** (ICST 2025, Zenodo 18897073). Submodular optimization + UniXcoder embeddings for TCP. Paper reports 16.4% higher median APFD over similarity-based methods (0.731 vs 0.628) on Defects4J. *(Artifact verification, May 3 2026: extracted `comprehensive_results_all_projects.csv` confirms FALCON-unixcoder-cosine project-median 0.731 vs FAST-pw project-median 0.602 across 6 projects.  Paper-abstract aggregation basis differs from project-level summary, but directional conclusion is independent of aggregation choice.)* **Open access confirmed (CC-BY 4.0): `falcon.zip` (24.1 MB), freely downloadable without login.** Covers 6 Defects4J projects: Chart, Closure, Lang, Math, Mockito, Time — 5 of 6 overlap with our FAST subjects. Contains FAST-pw/log/one/sqrt/all baselines alongside FALCON/GRAPHCUT/LOGDET variants with 5 embedding models × 2 distance metrics. `comprehensive_results_all_projects.csv` is directly importable for baseline comparison. Published March 2026. Directly relevant to Direction C (LLM-augmented representations). Sets the semantic baseline ceiling that any new representation method must clear.
 
 - **Adjacent artifact: LRTS** (ISSTA 2024, Zenodo 12662090, GitHub: lrtsuser/LRTS). Long-Running Test Suites dataset: **21,255 CI builds, 57,437 test-suite runs, average 6.5 hours per run**, 10 large-scale Java projects, explicitly analyzing flaky tests and long-running suites. Key finding: simple policies (prioritize faster tests that recently failed) can outperform sophisticated ML in some contexts — a direct challenge to any narrative that ML complexity yields reliable gains. Directly relevant to Directions A (flaky-test-aware TCP) and D (Android/mobile CI replication as contrast case).
 
@@ -70,7 +70,7 @@ Designed to be forwarded without local workspace context.
 
 - FAST = similarity-based non-ML TCP framework (ICSE 2018). 12 algorithms. Strong APFD at minimal cost. The pre-ML baseline tier.
 
-- FALCON = submodular + UniXcoder embedding TCP (ICST 2025). Currently the highest-bar semantic baseline: 0.731 median APFD on Defects4J.
+- FALCON = submodular + UniXcoder embedding TCP (ICST 2025). Currently the highest-bar semantic baseline: 0.731 median APFD on Defects4J (paper-level); artifact-verified per-project median 0.731 FALCON vs 0.602 FAST-pw.
 
 - DeepOrder = deep learning TCP for CI (ICSME 2021). Historical test execution records → regression-style neural ranking.
 
@@ -194,8 +194,7 @@ The paper proposes rAPFD to replace APFD, NAPFD, and NRPA, arguing prior metrics
 
 - **LRTS dataset scale:** 21,255 CI builds, 57,437 test-suite runs, average 6.5 hours per run. Simple "recent-failure + fast-test" heuristics outperform sophisticated ML in some LRTS contexts — directly challenging the assumption that ML complexity yields reliable gains on realistic datasets.
 
-- **FALCON competitive bar:** 0.731 median APFD vs. 0.628 for similarity-based methods on Defects4J. Any new LLM/embedding method must clear FALCON, not just the source paper's 11 ML methods.
-- **FALCON competitive bar:** 0.731 median APFD vs. 0.628 for similarity-based methods on Defects4J. Any new LLM/embedding method must clear FALCON, not just the source paper's 11 ML methods.
+- **FALCON competitive bar:** 0.731 median APFD vs. 0.628 for similarity-based methods on Defects4J (paper abstract); artifact-verified project-median 0.731 vs 0.602. Any new LLM/embedding method must clear FALCON, not just the source paper's 11 ML methods.
 
 - **FAST-log vs FAST-pw comparison (verified May 3 2026):** On SIR (C) subjects, FAST-log and FAST-pw perform within ±0.05 of each other — indistinguishable. On Defects4J (Java), FAST-log shows stdev 0.24–0.40 with occasional APFD near 0 — the log budget is too small for large Java suites, making FAST-log unreliable at this scale. FAST-pw is the more stable Defects4J baseline.
 
@@ -218,7 +217,7 @@ The paper proposes rAPFD to replace APFD, NAPFD, and NRPA, arguing prior metrics
 | time\_v0 | Java | 0.501 | 0.008 | 4.76 | Defects4J |
 | lang\_v0 | Java | 0.432 | 0.023 | 3.69 | Defects4J |
 | chart\_v0 | Java | 0.419 | 0.005 | 11.52 | **Lowest APFD**; Defects4J — slow |
-**Pattern:** FAST-pw is strongly effective on C subjects (0.738–0.960) and weak on Java/Defects4J subjects (0.419–0.553). The C/Java split in FAST-pw APFD directly parallels the source paper’s finding that subject type mediates method performance — and the Java subjects are exactly where FALCON’s 0.731 median APFD represents a 32–75% improvement over FAST-pw.
+**Pattern:** FAST-pw is strongly effective on C subjects (0.738–0.960) and weak on Java/Defects4J subjects (0.419–0.553). The C/Java split in FAST-pw APFD directly parallels the source paper's finding that subject type mediates method performance — and the Java subjects are exactly where FALCON's 0.731 median APFD represents a 32–75% improvement over FAST-pw (confirmed: artifact shows FALCON 0.731 vs FAST-pw 0.602 project-median on Defects4J).
 
 
 ## FAST-pw Baseline Results (bbox, 10 repetitions)
@@ -238,8 +237,7 @@ Non-ML similarity baseline. Produced locally from the Python 3.10 port of icse18
 | math_v0 | Defects4J (Java) | 0.5532 | 0.6289 | 11.432 | 7 fault versions × 10 runs |
 | time_v0 | Defects4J (Java) | 0.5009 | 0.4508 | 4.761 | 27 fault versions × 10 runs |
 
-**Pattern:** FAST-pw is strong on SIR subjects (mean APFD 0.74–0.96) but substantially lower on Defects4J subjects (0.42–0.55). This split likely reflects the richer test-fault structure of Java Defects4J vs. C SIR subjects and is important context for interpreting FALCON's 0.731 median APFD number (also on Defects4J). Any ML or LLM method claiming to beat FAST should specify which benchmark tier.
-**Pattern:** FAST-pw is strong on SIR subjects (mean APFD 0.74–0.96) but substantially lower on Defects4J subjects (0.42–0.55). This split likely reflects the richer test-fault structure of Java Defects4J vs. C SIR subjects and is important context for interpreting FALCON's 0.731 median APFD number (also on Defects4J). Any ML or LLM method claiming to beat FAST should specify which benchmark tier.
+**Pattern:** FAST-pw is strong on SIR subjects (mean APFD 0.74–0.96) but substantially lower on Defects4J subjects (0.42–0.55). This split likely reflects the richer test-fault structure of Java Defects4J vs. C SIR subjects and is important context for interpreting FALCON's 0.731 median APFD number (also on Defects4J, artifact-verified 0.602 FAST-pw baseline). Any ML or LLM method claiming to beat FAST should specify which benchmark tier.
 
 
 ## FAST-log Baseline Results (bbox, 10 repetitions)

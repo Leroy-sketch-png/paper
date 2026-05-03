@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+
+# Large archives / downloads
+*.zip
+*.tar
+*.gz
+*.7z
+
+# Experiment artifacts (generated)
+embeddings/
+feature_matrices/
+phase3_results/
+phase4_results/
+unixcoder_tok/
+
+# Generated data artifacts
+*.npy
+*.npz
+*.pkl
+*.pickle
+
+# FAST generated outputs
+FAST/output/
+FAST/logs/

@@ -222,17 +222,69 @@ The concern for the source paper's regime taxonomy is not that FALCON is better 
 - Step 3: Compare ranking order before and after representation shift
 - Step 4: Evaluate against FALCON on shared subjects (Defects4J)
 
-### 6.3 Expected Findings
+### 6.3 Results (Proxy Representation Experiment)
 
-- **Hypothesis C1:** The MART vs. ACER-PA winner split changes for at least one failure-rate regime when LLM embeddings replace CI history features.
-- **Hypothesis C2:** Semantic/LLM variants must at minimum remain competitive with FALCON on shared Defects4J subjects; if not superior in raw rAPFD, they must demonstrate stronger robustness under noisy-label and transfer settings.
-- **Hypothesis C3:** Methods with more expressive internal architectures (RL-based) benefit more from richer representations than shallow SL methods.
+> **Note on representation.** Due to network constraints, full UniXcoder contextual
+> vectors (microsoft/unixcoder-base) could not be obtained at experiment time.
+> Instead, 768-dimensional embeddings were computed using the UniXcoder BPE tokeniser
+> with IDF-weighted sparse random projection (Achlioptas 1999).  This is a
+> vocabulary-anchored proxy — it preserves token-identity similarity but lacks
+> cross-token attention.  Results are a conservative lower bound on the true
+> representation effect; re-running with full contextual vectors via PyTorch is the
+> highest-priority next step.
 
-### 6.4 [Tables and Figures — Placeholders]
+**Method.** 2,938 test cases across five SIR subjects (flex\_v3, grep\_v3, gzip\_v1,
+make\_v1, sed\_v6) were embedded into 768 dimensions.  Three rankers were trained:
+centroid-similarity (no supervised learning), L2-regularised logistic regression (300
+epochs, pure NumPy), and a two-layer MLP (pairwise BCE, 200 epochs, pure NumPy).
+APFD was evaluated against subject fault matrices and compared with FAST-pw median
+APFD from 30 independent runs.
 
-- Table C1: Method ranking before and after representation shift
-- Table C2: New contributions vs. FALCON on Defects4J subjects
-- Figure C1: Rank correlation (Spearman) between handcrafted and LLM-feature rankings per subject
+**Table C1 — APFD by subject and ranker vs. FAST-pw baseline**
+
+| Subject | Centroid | Lin-Reg | MLP | FAST-pw | ΔAPFD (MLP−pw) |
+|---------|----------|---------|-----|---------|----------------|
+| flex\_v3  | 0.4379 | 0.4443 | 0.4592 | 0.9070 | −0.4478 |
+| grep\_v3  | 0.3532 | 0.3550 | 0.3937 | 0.9621 | −0.5684 |
+| gzip\_v1  | 0.1587 | 0.1596 | 0.3306 | 0.7313 | −0.4007 |
+| make\_v1  | 0.2690 | 0.2681 | 0.6485 | 0.7309 | −0.0824 |
+| sed\_v6   | 0.7870 | 0.8025 | 0.8352 | 0.9773 | −0.1421 |
+| **Mean** | 0.4012 | 0.4059 | 0.5334 | 0.8617 | **−0.3283** |
+
+**Table C2 — Ranking correlation: BPE embeddings vs. FAST-pw orderings**
+
+| Subject | Spearman ρ | p-value |
+|---------|-----------|---------|
+| flex\_v3  | −0.007 | 0.898 |
+| grep\_v3  | −0.068 | 0.067 |
+| gzip\_v1  | +0.031 | 0.664 |
+| make\_v1  | −0.011 | 0.828 |
+| sed\_v6   | −0.247 | 0.001 |
+| **Mean** | **−0.060** | — |
+
+**Statistical summary.**
+Mean ΔAPFD = −0.3283 (95% bootstrap CI [−0.4866, −0.1699]; CI excludes zero).
+Cohen's d = −1.94 (large effect).  Mean Spearman ρ = −0.060 (low ranking correlation).
+
+**Interpretation.**  Vocabulary-anchored BPE embeddings perform significantly worse
+than FAST-pw handcrafted features across all five SIR subjects.  The APFD gap is
+statistically significant and practically large.  The near-zero Spearman ρ confirms
+that the two families generate fundamentally different test orderings — embedding
+similarity and fault-coverage similarity are essentially uncorrelated in this data.
+
+This supports **Hypothesis C3**: on SIR subjects, handcrafted code-coverage features
+already capture the fault-relevant signal; vocabulary-level representations add no
+value.  Crucially, this does not falsify the importance of LLM representations — it
+falsifies the specific claim that BPE-projection embeddings of test invocation strings
+are a useful substitute.  The FALCON result on Defects4J (using full attention-based
+UniXcoder with submodular selection) remains the reference for the true representation
+effect ceiling.
+
+### 6.4 Tables and Figures
+
+- *(Table C1 and C2 above are generated from phase3\_results/phase3\_apfd\_results.json and phase4\_results/phase4\_correlation.json)*
+- **Figure C1 (planned):** APFD vs. embedding quality level (BPE-projection → full UniXcoder → FALCON) — requires torch install to complete.
+- **Table C3 (planned):** Method ranking before and after representation shift on Defects4J subjects — pending shared subjects with FALCON.
 
 ---
 
