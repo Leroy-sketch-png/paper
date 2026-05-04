@@ -3,25 +3,29 @@
 **Total Artifacts:** 25+ files  
 **Total Size:** 300+ KB  
 **Timeline:** 2 sessions (May 1-2, 2026)  
-**Status:** Phase 1 ready for execution
+**Status:** Historical planning index from May 1-2, 2026
+
+**Note:** Point-in-time progress reports, summaries, and execution roadmaps from this planning loop now live under `archive/status/` and `archive/plans/`. Treat readiness estimates below as historical unless current artifacts confirm them.
+
+**Current layout note:** Active analysis implementations now live under `scripts/analysis/`; legacy root filenames remain as thin wrappers for compatibility.
 
 ---
 
 ## Master Directory Structure
 
 ```
-c:\Users\YOGA\Downloads\research\
+<workspace-root>/
 │
 ├── CORE RESEARCH DOCUMENTS (9 files)
 │   ├── paper_skeleton.md ......................... Main manuscript (9/9 sections complete)
 │   ├── window.md ................................ Research briefing + TCP history
-│   ├── TWO_SESSION_RESEARCH_SUMMARY.md .......... Comprehensive progress report
-│   ├── PROGRESS_REPORT_MAY3.md .................. Session 2 status snapshot
-│   ├── SESSION_2_COMPLETION_SUMMARY.md ......... Direction C framework summary
-│   ├── DIRECTION_C_EXECUTION_ROADMAP.md ........ Phase 1 launch specification
 │   ├── EXECUTION_SUMMARY.md ..................... Baseline results table
 │   ├── DIRECTION_C_COMPLETE_PROTOCOL.py ........ 5-phase end-to-end protocol (executed)
-│   └── DIRECTION_C_EXPECTED_FINDINGS.md ........ 3 scenarios pre-specified
+│   ├── DIRECTION_C_EXPECTED_FINDINGS.md ........ 3 scenarios pre-specified
+│   ├── archive/status/TWO_SESSION_RESEARCH_SUMMARY.md ... Comprehensive progress report
+│   ├── archive/status/PROGRESS_REPORT_MAY3.md ........... Session status snapshot
+│   ├── archive/status/SESSION_2_COMPLETION_SUMMARY.md ... Direction C framework summary
+│   └── archive/plans/DIRECTION_C_EXECUTION_ROADMAP.md ... Phase 1 launch specification
 │
 ├── DIRECTION C FRAMEWORK (8 files, 90 KB)
 │   ├── direction_c_strategy.py .................. Research question + hypotheses
@@ -31,7 +35,7 @@ c:\Users\YOGA\Downloads\research\
 │   ├── direction_c_install_strategies.py ....... 4 fallback dependency paths
 │   ├── DIRECTION_C_COMPLETE_PROTOCOL.py ........ [EXECUTED] Full protocol specification
 │   ├── DIRECTION_C_EXPECTED_FINDINGS.md ........ 3 outcome scenarios + implications
-│   └── SESSION_2_COMPLETION_SUMMARY.md ......... Blockers + workarounds
+│   └── archive/status/SESSION_2_COMPLETION_SUMMARY.md ... Blockers + workarounds
 │
 ├── DIRECTION A FRAMEWORK (2 files, 15 KB)
 │   ├── flaky_detection_framework.pdf ........... Flaky-test detection protocol
@@ -44,13 +48,15 @@ c:\Users\YOGA\Downloads\research\
 ├── DIRECTION D FRAMEWORK (1 file, 8 KB)
 │   └── EXECUTION_SUMMARY.md ..................... Staged release analysis (LRTS interim)
 │
-├── UTILITY SCRIPTS (6 files, 35 KB)
-│   ├── heuristic_baselines.py .................. FFF oracle computation
-│   ├── print_results.py ........................ Results formatting + table generation
-│   ├── analyze_faults_d4j.py ................... Fault matrix analysis
-│   ├── defects4j_results.csv ................... D4J FAST evaluation raw data
-│   ├── sir_results.csv ......................... SIR FAST evaluation raw data
-│   └── baseline_results.csv .................... Heuristic + Random baselines
+├── ANALYSIS SCRIPTS
+│   ├── scripts/analysis/bootstrap_ci.py ........ Bootstrap confidence intervals
+│   ├── scripts/analysis/heuristic_baselines.py . FFF oracle + Random-30 computation
+│   ├── scripts/analysis/print_results.py ....... Results formatting + table generation
+│   ├── scripts/analysis/comprehensive_results.py  Comprehensive multi-method summary
+│   ├── bootstrap_ci.py ......................... Compatibility wrapper entry point
+│   ├── heuristic_baselines.py .................. Compatibility wrapper entry point
+│   ├── print_results.py ........................ Compatibility wrapper entry point
+│   └── comprehensive_results.py ................ Compatibility wrapper entry point
 │
 ├── BASELINE DATA (4 files, 8 MB)
 │   ├── FALCON_artifact/ ........................ Zenodo 7036507 download (24.1 MB verified)
@@ -74,7 +80,7 @@ c:\Users\YOGA\Downloads\research\
 
 ## By Phase: What's Ready When
 
-### NOW (Installation 85% complete)
+### Historical "Now" Snapshot (Installation 85% complete at the time)
 | File | Type | Status | Action |
 |---|---|---|---|
 | direction_c_strategy.py | Code | ✓ DONE | Reference |
@@ -137,7 +143,7 @@ c:\Users\YOGA\Downloads\research\
 **Manuscript:** `paper_skeleton.md` (9/9 sections complete, only data gaps)  
 **Briefing:** `window.md` (TCP history + research context)  
 **Baseline:** `EXECUTION_SUMMARY.md` (all 6-tier baselines verified)  
-**Two-session summary:** `TWO_SESSION_RESEARCH_SUMMARY.md` (comprehensive progress)
+**Two-session summary:** `archive/status/TWO_SESSION_RESEARCH_SUMMARY.md` (comprehensive progress)
 
 ### For Other Directions (A, B, D)
 **Direction A (Flaky Tests):** `flaky_detection_framework.pdf` + simulation  
@@ -146,7 +152,7 @@ c:\Users\YOGA\Downloads\research\
 
 ### For Blocking Issues
 **If torch won't install:** Read `direction_c_install_strategies.py` (4 fallbacks)  
-**If Understand unavailable:** Read `SESSION_2_COMPLETION_SUMMARY.md` (ACER-PA workaround)  
+**If Understand unavailable:** Read `archive/status/SESSION_2_COMPLETION_SUMMARY.md` (ACER-PA workaround)  
 **If D4J sources missing:** Use SIR subjects + FALCON embeddings per `DIRECTION_C_COMPLETE_PROTOCOL.py`
 
 ---
@@ -214,8 +220,8 @@ c:\Users\YOGA\Downloads\research\
 | direction_c_compute_embeddings.py | 1.0 | May 2 | Ready to execute |
 | direction_c_feature_matrix.py | 1.0 | May 2 | Ready to execute |
 | DIRECTION_C_EXPECTED_FINDINGS.md | 1.0 | May 2 | Pre-specified scenarios |
-| TWO_SESSION_RESEARCH_SUMMARY.md | 2.0 | May 2 | Comprehensive progress |
-| DIRECTION_C_EXECUTION_ROADMAP.md | 1.0 | May 2 | Phase 1 launch specs |
+| archive/status/TWO_SESSION_RESEARCH_SUMMARY.md | 2.0 | May 2 | Comprehensive progress |
+| archive/plans/DIRECTION_C_EXECUTION_ROADMAP.md | 1.0 | May 2 | Phase 1 launch specs |
 
 ---
 
@@ -227,8 +233,8 @@ direction_c_feature_matrix.py           : 5.8 KB, 162 lines, ready
 DIRECTION_C_COMPLETE_PROTOCOL.py        : 15.7 KB, executed
 DIRECTION_C_EXPECTED_FINDINGS.md        : 17.8 KB, 18 scenarios
 paper_skeleton.md                       : 51.5 KB, 220 lines
-TWO_SESSION_RESEARCH_SUMMARY.md         : 13.9 KB, 450 lines
-DIRECTION_C_EXECUTION_ROADMAP.md        : 11.2 KB, 380 lines
+archive/status/TWO_SESSION_RESEARCH_SUMMARY.md : 13.9 KB, 450 lines
+archive/plans/DIRECTION_C_EXECUTION_ROADMAP.md : 11.2 KB, 380 lines
 ```
 
 **Total Ready Code:** 30 KB  

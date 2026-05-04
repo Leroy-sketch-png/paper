@@ -22,6 +22,18 @@ from typing import Tuple, List, Dict
 import sys
 
 
+def workspace_root() -> Path:
+    current = Path(__file__).resolve()
+    for candidate in (current.parent, *current.parents):
+        if (candidate / ".github" / "copilot-instructions.md").exists():
+            return candidate
+    raise FileNotFoundError("Could not locate workspace root from script path")
+
+
+ROOT = workspace_root()
+FAST_ROOT = ROOT / "FAST"
+
+
 def deterministic_lexical_embedding(source_code: str, dim: int = 768) -> np.ndarray:
     """Create a deterministic embedding without ML dependencies.
 
@@ -230,7 +242,7 @@ def main():
     print("=" * 80)
     
     # Create output directory
-    output_dir = Path("embeddings")
+    output_dir = ROOT / "embeddings"
     output_dir.mkdir(exist_ok=True)
     print(f"\nOutput directory: {output_dir}")
     
@@ -249,34 +261,34 @@ def main():
     # Define subjects
     subjects_config = {
         "flex_v3": {
-            "test_path": "c:/Users/YOGA/Downloads/research/FAST/dataset/flex/v3/tests",
+            "test_path": FAST_ROOT / "dataset" / "flex" / "v3" / "tests",
             "file_ext": ".c",
             "type": "sir",
-            "fallback_input_file": "c:/Users/YOGA/Downloads/research/FAST/input/flex_v3/flex-bbox.txt"
+            "fallback_input_file": FAST_ROOT / "input" / "flex_v3" / "flex-bbox.txt"
         },
         "grep_v3": {
-            "test_path": "c:/Users/YOGA/Downloads/research/FAST/dataset/grep/v3/tests",
+            "test_path": FAST_ROOT / "dataset" / "grep" / "v3" / "tests",
             "file_ext": ".c",
             "type": "sir",
-            "fallback_input_file": "c:/Users/YOGA/Downloads/research/FAST/input/grep_v3/grep-bbox.txt"
+            "fallback_input_file": FAST_ROOT / "input" / "grep_v3" / "grep-bbox.txt"
         },
         "gzip_v1": {
-            "test_path": "c:/Users/YOGA/Downloads/research/FAST/dataset/gzip/v1/tests",
+            "test_path": FAST_ROOT / "dataset" / "gzip" / "v1" / "tests",
             "file_ext": ".c",
             "type": "sir",
-            "fallback_input_file": "c:/Users/YOGA/Downloads/research/FAST/input/gzip_v1/gzip-bbox.txt"
+            "fallback_input_file": FAST_ROOT / "input" / "gzip_v1" / "gzip-bbox.txt"
         },
         "make_v1": {
-            "test_path": "c:/Users/YOGA/Downloads/research/FAST/dataset/make/v1/tests",
+            "test_path": FAST_ROOT / "dataset" / "make" / "v1" / "tests",
             "file_ext": ".c",
             "type": "sir",
-            "fallback_input_file": "c:/Users/YOGA/Downloads/research/FAST/input/make_v1/make-bbox.txt"
+            "fallback_input_file": FAST_ROOT / "input" / "make_v1" / "make-bbox.txt"
         },
         "sed_v6": {
-            "test_path": "c:/Users/YOGA/Downloads/research/FAST/dataset/sed/v6/tests",
+            "test_path": FAST_ROOT / "dataset" / "sed" / "v6" / "tests",
             "file_ext": ".c",
             "type": "sir",
-            "fallback_input_file": "c:/Users/YOGA/Downloads/research/FAST/input/sed_v6/sed-bbox.txt"
+            "fallback_input_file": FAST_ROOT / "input" / "sed_v6" / "sed-bbox.txt"
         },
     }
     

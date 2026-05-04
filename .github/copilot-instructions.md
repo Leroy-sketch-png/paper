@@ -57,7 +57,7 @@ Planning documents may be more ambitious than the currently checked-in execution
 
 ## Path And Environment Safety
 
-Many files still contain machine-specific paths under `c:\Users\YOGA\Downloads\research`.
+Some historical or maintenance files still contain an older machine-specific research path.
 
 - Do not add new hardcoded user-specific paths.
 - When changing scripts, prefer paths derived from `Path(__file__).parent`, the current workspace root, or clearly declared config variables.
@@ -109,7 +109,7 @@ Use these files intentionally:
 - `paper_manuscript.tex` as generated output, not the preferred hand-edit target
 - `EXECUTION_SUMMARY.md` for verified baseline and blocker framing
 - `window.md` for upward-facing research synthesis and argument framing
-- `WORK_PRODUCT_INDEX.md`, `PROGRESS_REPORT_MAY3.md`, and session summaries for historical status context
+- `WORK_PRODUCT_INDEX.md` plus archived status/planning documents under `archive/status/` and `archive/plans/` for historical context
 - `2311.13413v1.notes.md` for source-paper interpretation shortcuts
 
 Prefer updating the source document that owns the fact instead of only changing downstream summaries.
@@ -155,6 +155,10 @@ This workspace mixes three categories of material:
 - primary manuscript and summary documents
 - executable helper scripts and protocol code
 - historical memos that reference tools, datasets, and folders outside the current checkout
+
+Archived memo loops, stale session snapshots, and one-off utilities may be moved under `archive/` or `scripts/maintenance/` to reduce root clutter without deleting provenance.
+
+Active analysis helpers may be grouped under `scripts/analysis/` as long as established root entry points are preserved as thin wrappers.
 
 Always distinguish between `documented somewhere`, `implemented in code`, and `present and runnable here`.
 

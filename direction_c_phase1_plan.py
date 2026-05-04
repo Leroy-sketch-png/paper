@@ -16,6 +16,19 @@ import json
 import numpy as np
 from pathlib import Path
 
+
+def workspace_root() -> Path:
+    current = Path(__file__).resolve()
+    for candidate in (current.parent, *current.parents):
+        if (candidate / ".github" / "copilot-instructions.md").exists():
+            return candidate
+    raise FileNotFoundError("Could not locate workspace root from script path")
+
+
+ROOT = workspace_root()
+FAST_ROOT = ROOT / "FAST"
+DEFECTS4J_ROOT = Path(os.environ["DEFECTS4J_ROOT"]).expanduser() if os.environ.get("DEFECTS4J_ROOT") else ROOT / "defects4j"
+
 print("=" * 80)
 print("Direction C - Phase 1: UniXcoder Embedding Infrastructure")
 print("=" * 80)
@@ -88,53 +101,53 @@ source_configs = {
     # SIR (C subjects)
     "flex_v3": {
         "type": "sir",
-        "test_path": "c:/Users/YOGA/Downloads/research/FAST/dataset/flex/v3/tests",
+        "test_path": FAST_ROOT / "dataset" / "flex" / "v3" / "tests",
         "file_ext": ".c"
     },
     "grep_v3": {
         "type": "sir",
-        "test_path": "c:/Users/YOGA/Downloads/research/FAST/dataset/grep/v3/tests",
+        "test_path": FAST_ROOT / "dataset" / "grep" / "v3" / "tests",
         "file_ext": ".c"
     },
     "gzip_v1": {
         "type": "sir",
-        "test_path": "c:/Users/YOGA/Downloads/research/FAST/dataset/gzip/v1/tests",
+        "test_path": FAST_ROOT / "dataset" / "gzip" / "v1" / "tests",
         "file_ext": ".c"
     },
     "make_v1": {
         "type": "sir",
-        "test_path": "c:/Users/YOGA/Downloads/research/FAST/dataset/make/v1/tests",
+        "test_path": FAST_ROOT / "dataset" / "make" / "v1" / "tests",
         "file_ext": ".c"
     },
     "sed_v6": {
         "type": "sir",
-        "test_path": "c:/Users/YOGA/Downloads/research/FAST/dataset/sed/v6/tests",
+        "test_path": FAST_ROOT / "dataset" / "sed" / "v6" / "tests",
         "file_ext": ".c"
     },
     # D4J (Java subjects) - requires Defects4J installation
     "chart_v0": {
         "type": "d4j",
-        "test_path": "c:/Users/YOGA/Downloads/defects4j/projects/Chart/test",
+        "test_path": DEFECTS4J_ROOT / "projects" / "Chart" / "test",
         "file_ext": ".java"
     },
     "closure_v0": {
         "type": "d4j",
-        "test_path": "c:/Users/YOGA/Downloads/defects4j/projects/Closure/test",
+        "test_path": DEFECTS4J_ROOT / "projects" / "Closure" / "test",
         "file_ext": ".java"
     },
     "lang_v0": {
         "type": "d4j",
-        "test_path": "c:/Users/YOGA/Downloads/defects4j/projects/Lang/test",
+        "test_path": DEFECTS4J_ROOT / "projects" / "Lang" / "test",
         "file_ext": ".java"
     },
     "math_v0": {
         "type": "d4j",
-        "test_path": "c:/Users/YOGA/Downloads/defects4j/projects/Math/test",
+        "test_path": DEFECTS4J_ROOT / "projects" / "Math" / "test",
         "file_ext": ".java"
     },
     "time_v0": {
         "type": "d4j",
-        "test_path": "c:/Users/YOGA/Downloads/defects4j/projects/Time/test",
+        "test_path": DEFECTS4J_ROOT / "projects" / "Time" / "test",
         "file_ext": ".java"
     },
 }

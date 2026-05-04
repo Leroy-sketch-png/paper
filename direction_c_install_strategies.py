@@ -131,7 +131,7 @@ If you prefer to install manually in terminal:
 
 STEP 1: Open PowerShell in VS Code terminal
 STEP 2: Activate venv:
-  & c:/Users/YOGA/Downloads/research/.venv/Scripts/Activate.ps1
+  & ./.venv/Scripts/Activate.ps1
 
 STEP 3: Try Strategy 1 (sentence-transformers):
   pip install sentence-transformers --retries 10 --timeout 120

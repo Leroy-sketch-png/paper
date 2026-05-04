@@ -24,6 +24,20 @@ desktop.ini
 *.tmp
 *.temp
 
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.lof
+*.lot
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+
 # Large archives / downloads
 *.zip
 *.tar
