@@ -5,6 +5,7 @@ This repository is an evidence-preserving workspace for the ML-based test case p
 ## Top-Level Structure
 
 - `manuscript/` contains the paper source, generated LaTeX, PDF, and manuscript workflow notes.
+- `learning/` contains beginner-first study guides and a workbook for learning both the original and newer papers.
 - `artifacts/` contains verified downloaded artifacts and regenerated result summaries.
 - `references/` contains the source-paper bundle and reading aids.
 - `direction_a/`, `direction_b/`, and `direction_c/` contain active direction-specific framework and execution material.
