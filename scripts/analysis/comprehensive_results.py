@@ -23,7 +23,7 @@ def workspace_root() -> Path:
 
 
 ROOT = workspace_root()
-FALCON_FILE = ROOT / "falcon_comprehensive_results_all_projects.csv"
+FALCON_FILE = ROOT / "artifacts" / "falcon_comprehensive_results_all_projects.csv"
 
 
 def num(value: str) -> float:

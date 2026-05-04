@@ -12,7 +12,7 @@ def workspace_root() -> pathlib.Path:
 
 ROOT = workspace_root()
 FAST = ROOT / 'FAST'
-HEURISTIC_BASELINES = ROOT / 'heuristic_baselines.csv'
+HEURISTIC_BASELINES = ROOT / 'artifacts' / 'heuristic_baselines.csv'
 
 def fast_stats(subj, method):
     tsv = FAST / 'output' / subj / f'{method}-bbox.tsv'

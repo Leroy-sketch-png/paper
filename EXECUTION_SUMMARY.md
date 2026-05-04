@@ -32,9 +32,9 @@
 
 | File | Status | Key Updates |
 |---|---|---|
-| `paper_skeleton.md` | 9/9 sections written, zero placeholders | Section 2.1 FAST paragraph: updated with n=30 SIR numbers, full D4J evaluation, FFF oracle, Random-30 bounds. Section 2.4 FALCON: artifact-verified per-project APFDs (Chart 0.7263, Closure 0.7002, Lang 0.7543, Math 0.6224, Mockito 0.7362, Time 0.7944) vs FAST-pw (0.6121, 0.6196, 0.5052, 0.5589, 0.6569, 0.5927). Section 8.3 (LLM representations): clarified paper-level vs artifact-level aggregation. Section 9 (Conclusion): updated with both paper and artifact numbers, no hallucinations. |
+| `manuscript/paper_skeleton.md` | 9/9 sections written, zero placeholders | Section 2.1 FAST paragraph: updated with n=30 SIR numbers, full D4J evaluation, FFF oracle, Random-30 bounds. Section 2.4 FALCON: artifact-verified per-project APFDs (Chart 0.7263, Closure 0.7002, Lang 0.7543, Math 0.6224, Mockito 0.7362, Time 0.7944) vs FAST-pw (0.6121, 0.6196, 0.5052, 0.5589, 0.6569, 0.5927). Section 8.3 (LLM representations): clarified paper-level vs artifact-level aggregation. Section 9 (Conclusion): updated with both paper and artifact numbers, no hallucinations. |
 | `window.md` | 600+ lines complete | Updated FALCON mentions with artifact aggregation caveat. Paper-abstract 0.731 vs 0.628 retained as primary; artifact-verified 0.731 vs 0.602 added as validation basis. |
-| `heuristic_baselines.csv` | Complete | FFF oracle and Random-30 statistics for all 10 subjects |
+| `artifacts/heuristic_baselines.csv` | Complete | FFF oracle and Random-30 statistics for all 10 subjects |
 | `print_results.py` | Working | Master results table generator: consolidates FAST-pw, FAST-log, FFF, Random-30 across all subjects |
 
 ### Artifacts & Tools
@@ -44,11 +44,11 @@
 | `heuristic_baselines.py` | Working | Computes FFF oracle and Random-30 baselines for SIR (javaFlag=False) and D4J (javaFlag=True) subjects |
 | `FAST/run_sir_log.py` | Executed successfully | Re-runs FAST-log on SIR subjects with n=30 repetitions from correct CWD, bypasses caching guard |
 | `scripts/maintenance/download_falcon.py` | Superseded by curl | Python script had timeout issues; `curl.exe` with `--continue-at` resumed successfully from 4.5 MB |
-| `falcon.zip` | 24.1 MB, verified valid | Downloaded into the current workspace root as `falcon.zip` |
-| `falcon_comprehensive_results_all_projects.csv` | Extracted and parsed | 17.4 kB, verified as importable per-project summary |
+| `artifacts/falcon.zip` | 24.1 MB, verified valid | Downloaded into the workspace artifacts folder |
+| `artifacts/falcon_comprehensive_results_all_projects.csv` | Extracted and parsed | 17.4 kB, verified as importable per-project summary |
 | **`bootstrap_ci.py`** | **Complete + executed** | **Computes 95% bootstrap CIs for SIR FAST results; 1000 resamples per subject; percentile-based** |
-| **`flaky_detection_protocol.py`** | **Complete + executed** | **Defines re-execution protocol for flaky-test detection (Direction A); simulates on all 10 subjects; documents IDoFT coverage gaps** |
-| **`federated_pretraining_framework.py`** | **Complete + executed** | **Designs FedAvg protocol for Direction B; estimates communication overhead and transfer retention ratios** |
+| **`direction_a/flaky_detection_protocol.py`** | **Complete + executed** | **Defines re-execution protocol for flaky-test detection (Direction A); simulates on all 10 subjects; documents IDoFT coverage gaps** |
+| **`direction_b/federated_pretraining_framework.py`** | **Complete + executed** | **Designs FedAvg protocol for Direction B; estimates communication overhead and transfer retention ratios** |
 | **`comprehensive_results.py`** | **Complete + executed** | **Generates master results table with all FAST variants + FALCON + heuristics; provides per-method summaries** |
 
 ---
@@ -90,7 +90,7 @@
 
 ### Supporting Artifacts
 
-- Master results table (`heuristic_baselines.csv`, `print_results.py`) provides unified baseline grid for all direction results
+- Master results table (`artifacts/heuristic_baselines.csv`, `print_results.py`) provides unified baseline grid for all direction results
 - window.md serves as forward-facing research briefing; artifact annotations added for precision
 
 ---
@@ -134,7 +134,7 @@
 
 6. **Polish and submit**
    - Verify all tables include six-tier baseline grid
-   - Cross-check numerical consistency across paper_skeleton.md, window.md, heuristic_baselines.csv
+   - Cross-check numerical consistency across manuscript/paper_skeleton.md, window.md, artifacts/heuristic_baselines.csv
    - Finalize references and artifact links
 
 ---
@@ -143,16 +143,16 @@
 
 - **Workspace:** Current repository root (portable; do not assume the older machine-specific research location)
 - **Python environment:** `.venv` (Python 3.10.11, venv type)
-- **Script layout:** Active analysis implementations live under `scripts/analysis/`; established root commands remain as thin compatibility wrappers
+- **Script layout:** Active analysis implementations live under `scripts/analysis/`; direction-specific framework material lives under `direction_a/`, `direction_b/`, and `direction_c/`; established root commands remain as thin compatibility wrappers
 - **Key scripts:** 
   - `print_results.py` — master results table
   - `heuristic_baselines.py` — FFF oracle and Random-30 computation
   - `FAST/py/prioritize.py` — FAST baseline (Python 3.10 port, local execution)
   - `FAST/py/metric.py` — APFD computation (takes file path, supports javaFlag for SIR/D4J distinction)
 - **Artifacts:**
-  - `falcon.zip` (24.1 MB, complete)
-  - `falcon_comprehensive_results_all_projects.csv` (extracted, verified)
-  - `heuristic_baselines.csv` (FFF + Random-30 for all 10 subjects)
+   - `artifacts/falcon.zip` (24.1 MB, complete)
+   - `artifacts/falcon_comprehensive_results_all_projects.csv` (extracted, verified)
+   - `artifacts/heuristic_baselines.csv` (FFF + Random-30 for all 10 subjects)
 
 ---
 

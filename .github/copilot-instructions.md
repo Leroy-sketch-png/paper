@@ -39,13 +39,13 @@ Use the strongest accurate label for every claim:
 
 - `verified` for values backed by existing artifacts, checked files, or executed outputs present in the workspace
 - `artifact-verified` for values imported from an external artifact already downloaded or extracted into the workspace
-- `simulated` for protocol demonstrations such as `flaky_detection_protocol.py`
+- `simulated` for protocol demonstrations such as `direction_a/flaky_detection_protocol.py`
 - `framework` or `protocol` for design documents that specify how work should run but do not prove that the underlying experiment ran
 - `blocked` or `staged` where a dependency or dataset is still unavailable
 
 Do not collapse `framework complete`, `ready to execute`, `simulated`, and `executed on real data` into the same status language.
 
-Planning documents may be more ambitious than the currently checked-in execution scripts. When Direction C documents and `direction_c_phase3_ranker.py` or `direction_c_phase4_correlation.py` disagree, describe both accurately instead of forcing a false single story.
+Planning documents may be more ambitious than the currently checked-in execution scripts. When Direction C documents and `direction_c/direction_c_phase3_ranker.py` or `direction_c/direction_c_phase4_correlation.py` disagree, describe both accurately instead of forcing a false single story.
 
 ## Editing Rules
 
@@ -77,13 +77,13 @@ Generated experiment outputs are intentionally ignored by Git. Expect these dire
 
 Do not describe these outputs as present unless you have verified them in the current workspace.
 
-Prefer regenerating derived artifacts over hand-editing them. This especially applies to `paper_manuscript.tex`, `heuristic_baselines.csv`, and any future `phase3_results/` or `phase4_results/` JSON outputs.
+Prefer regenerating derived artifacts over hand-editing them. This especially applies to `manuscript/paper_manuscript.tex`, `artifacts/heuristic_baselines.csv`, and any future `phase3_results/` or `phase4_results/` JSON outputs.
 
 ## Manuscript Workflow
 
-- `paper_skeleton.md` is the main narrative source.
-- `generate_latex_manuscript.py` regenerates `paper_manuscript.tex` from `paper_skeleton.md`.
-- `MANUSCRIPT_README.md` describes the intended manuscript flow and compilation steps.
+- `manuscript/paper_skeleton.md` is the main narrative source.
+- `manuscript/generate_latex_manuscript.py` regenerates `manuscript/paper_manuscript.tex` from `manuscript/paper_skeleton.md`.
+- `manuscript/MANUSCRIPT_README.md` describes the intended manuscript flow and compilation steps.
 
 If you change the manuscript structure or claims:
 
@@ -91,12 +91,12 @@ If you change the manuscript structure or claims:
 2. Regenerate LaTeX when needed.
 3. Keep manuscript-facing summaries aligned with the changed claim.
 
-If a summary claims `zero placeholders`, verify that against `paper_skeleton.md` before repeating it. The repository history shows manuscript-status summaries can lag behind the actual text.
+If a summary claims `zero placeholders`, verify that against `manuscript/paper_skeleton.md` before repeating it. The repository history shows manuscript-status summaries can lag behind the actual text.
 
 ## Citation And Baseline Hygiene
 
-- Use `2311.13413v1.notes.md` as a working interpretation aid, not as the final authority for exact citations.
-- For source-paper numbers that matter to the manuscript, prefer `2311.13413v1.pdf` or the cleaned extraction in `2311.13413v1.md`, with extra caution around figure-heavy or table-heavy claims.
+- Use `references/2311.13413v1.notes.md` as a working interpretation aid, not as the final authority for exact citations.
+- For source-paper numbers that matter to the manuscript, prefer `references/2311.13413v1.pdf` or the cleaned extraction in `references/2311.13413v1.md`, with extra caution around figure-heavy or table-heavy claims.
 - Preserve the difference between source-paper claims, artifact-verified numbers, and locally reproduced numbers.
 - For FALCON specifically, keep paper-level and project-level aggregation distinct.
 
@@ -104,13 +104,13 @@ If a summary claims `zero placeholders`, verify that against `paper_skeleton.md`
 
 Use these files intentionally:
 
-- `MANUSCRIPT_README.md` for manuscript status and regeneration workflow
-- `paper_skeleton.md` for the primary paper narrative
-- `paper_manuscript.tex` as generated output, not the preferred hand-edit target
+- `manuscript/MANUSCRIPT_README.md` for manuscript status and regeneration workflow
+- `manuscript/paper_skeleton.md` for the primary paper narrative
+- `manuscript/paper_manuscript.tex` as generated output, not the preferred hand-edit target
 - `EXECUTION_SUMMARY.md` for verified baseline and blocker framing
 - `window.md` for upward-facing research synthesis and argument framing
 - `WORK_PRODUCT_INDEX.md` plus archived status/planning documents under `archive/status/` and `archive/plans/` for historical context
-- `2311.13413v1.notes.md` for source-paper interpretation shortcuts
+- `references/2311.13413v1.notes.md` for source-paper interpretation shortcuts
 
 Prefer updating the source document that owns the fact instead of only changing downstream summaries.
 
@@ -129,14 +129,14 @@ Do not rewrite the paper or summaries as if all four directions have been execut
 
 ## Direction C Specific Rules
 
-- Distinguish between the planning stack (`direction_c_strategy.py`, `direction_c_phase1_plan.py`, `DIRECTION_C_COMPLETE_PROTOCOL.py`, `DIRECTION_C_EXPECTED_FINDINGS.md`) and the currently implemented surrogate execution stack (`direction_c_compute_embeddings.py`, `direction_c_feature_matrix.py`, `direction_c_phase3_ranker.py`, `direction_c_phase4_correlation.py`).
+- Distinguish between the planning stack (`direction_c/direction_c_strategy.py`, `direction_c/direction_c_phase1_plan.py`, `direction_c/DIRECTION_C_COMPLETE_PROTOCOL.py`, `direction_c/DIRECTION_C_EXPECTED_FINDINGS.md`) and the currently implemented surrogate execution stack (`direction_c/direction_c_compute_embeddings.py`, `direction_c/direction_c_feature_matrix.py`, `direction_c/direction_c_phase3_ranker.py`, `direction_c/direction_c_phase4_correlation.py`).
 - If discussing current executed Direction C results, say they are based on a vocabulary-anchored or fallback embedding path on SIR subjects unless you have verified new full-contextual outputs.
 - Do not imply MART or ACER-PA retraining happened unless output artifacts prove it.
 - Keep the manuscript's negative BPE-proxy result separate from the open question about full UniXcoder or FALCON-level representations.
 
 ## Tables And Placeholders
 
-- `paper_skeleton.md` still contains placeholder sections for Direction A, B, and D tables or figures.
+- `manuscript/paper_skeleton.md` still contains placeholder sections for Direction A, B, and D tables or figures.
 - Direction C tables cite `phase3_results/` and `phase4_results/` JSON outputs; verify those files exist before claiming the tables were script-generated in the current checkout.
 - If you add or remove a placeholder, synchronize the surrounding summaries so status language stays honest.
 
@@ -160,6 +160,8 @@ Archived memo loops, stale session snapshots, and one-off utilities may be moved
 
 Active analysis helpers may be grouped under `scripts/analysis/` as long as established root entry points are preserved as thin wrappers.
 
+Active direction-specific framework material may live under `direction_a/`, `direction_b/`, and `direction_c/` when that keeps the workspace root focused on manuscript files and primary entry points.
+
 Always distinguish between `documented somewhere`, `implemented in code`, and `present and runnable here`.
 
 ## Preferred Working Style
@@ -174,15 +176,15 @@ Always distinguish between `documented somewhere`, `implemented in code`, and `p
 
 Treat edits in these files as high impact and verify carefully afterward:
 
-- `paper_skeleton.md`
-- `paper_manuscript.tex`
+- `manuscript/paper_skeleton.md`
+- `manuscript/paper_manuscript.tex`
 - `EXECUTION_SUMMARY.md`
 - `window.md`
 - `heuristic_baselines.py`
 - `print_results.py`
-- `direction_c_compute_embeddings.py`
-- `direction_c_phase3_ranker.py`
-- `direction_c_phase4_correlation.py`
+- `direction_c/direction_c_compute_embeddings.py`
+- `direction_c/direction_c_phase3_ranker.py`
+- `direction_c/direction_c_phase4_correlation.py`
 
 ## Default Agent Behavior For This Repo
 

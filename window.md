@@ -32,7 +32,7 @@ Designed to be forwarded without local workspace context.
 
 | Item | Status | Location / Notes |
 |---|---|---|
-| Source paper | In hand | `2311.13413v1.pdf`, converted to `.md` |
+| Source paper | In hand | `references/2311.13413v1.pdf`, converted to `references/2311.13413v1.md` |
 | Source paper replication package | Located — **files restricted** | Zenodo 7036507; structure confirmed: \collect_data/\, l/\, \supervised_learning/\, \origin/\ (11 projects), \smote/\, esult/\; requires Understand + Ranklib; login required to download |
 | FAST (ICSE 2018) non-ML baseline | **Complete** | `FAST/` — FAST-pw: done ✓ all 10 subjects; FAST-log: done ✓ all 10 subjects (May 3 2026) |
 | FALCON (ICST 2025) artifact | **Open access confirmed** | Zenodo 18897073 — CC-BY 4.0; `falcon.zip` (24.1 MB); covers Chart, Closure, Lang, Math, Mockito, Time (Defects4J); includes FAST baselines + FALCON/GRAPHCUT/LOGDET variants; `comprehensive_results_all_projects.csv` (17.4 kB) directly usable; downloadable without login |
@@ -45,7 +45,7 @@ Designed to be forwarded without local workspace context.
 | FAST-log baseline table | **Done** | bbox mode, 10 subjects, 10 reps each (last-10 for Defects4J; contaminated rows excluded) — see Hard Numbers section |
 | Source paper 11 subjects | **Confirmed** | More-failure: bcel, jedis, jsprit, nfe, spring-data-redis / Less-failure: csv, dbcp, text, java-faker, jsoup, maxwell |
 | IDoFT coverage for Direction A | **Critical gap confirmed** | 9/11 subjects NOT in IDoFT; Direction A requires alternative flaky-label source (DeFlaker, NonDex, CI history mining, or direct re-execution) |
-| Paper skeleton / draft | **Done** | See \paper_skeleton.md\ |
+| Paper skeleton / draft | **Done** | See manuscript/paper_skeleton.md |
 **Highest-readiness direction:** Direction B (federated pretraining) — source paper's strongest clue, replication package in hand, concept grounded. **Highest-urgency gap:** Direction A flaky-label source — IDoFT covers only 2/11 source paper subjects; DeFlaker/NonDex tooling or CI log mining needed before Direction A can run. Direction D Android CI data still missing.
 
 ## Scope In Plain Terms

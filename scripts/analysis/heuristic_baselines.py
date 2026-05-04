@@ -21,6 +21,7 @@ def workspace_root() -> pathlib.Path:
 
 ROOT = workspace_root()
 FAST = ROOT / "FAST"
+ARTIFACTS = ROOT / "artifacts"
 os.chdir(FAST)
 sys.path.insert(0, str(FAST / "py"))
 import metric as m
@@ -92,6 +93,7 @@ def compute_apfd_d4j(order, fm_path):
 
 
 def run_all():
+    ARTIFACTS.mkdir(exist_ok=True)
     results = {}
 
     for subj in SIR_SUBJECTS + D4J_SUBJECTS:
@@ -136,7 +138,7 @@ def run_all():
         print(f"{subj:<15} {r['n_tests']:>6} {r['fff_apfd']:>8.4f} {r['rand_mean']:>12.4f} {r['rand_std']:>10.4f}")
 
     # Write CSV
-    out_path = ROOT / "heuristic_baselines.csv"
+    out_path = ARTIFACTS / "heuristic_baselines.csv"
     with open(out_path, "w", newline="") as csvf:
         writer = csv.writer(csvf)
         writer.writerow(["subject", "suite", "n_tests", "fff_apfd", "rand30_mean", "rand30_stdev"])
