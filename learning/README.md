@@ -1,9 +1,15 @@
 # Learning Path: From Zero to the Two Papers
 
+If you want the shortest path with the least navigation, stop here and use `../LEARN_THE_PAPERS_ONE_FILE.md`.
+
+This folder is the modular version of that same learning system.
+
 This folder is a beginner-first learning track for understanding:
 
 - the original ML-TCP benchmark paper in `references/`
 - the newer realism-correction manuscript in `manuscript/`
+
+If you do not want multi-file study, ignore the rest of this folder after opening `../LEARN_THE_PAPERS_ONE_FILE.md`.
 
 It follows the Universal Learning OS loop:
 
