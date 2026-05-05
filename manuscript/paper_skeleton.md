@@ -3,6 +3,20 @@
 **Working title (v1):** *Label Realism, Data Governance, and Representation Shift: Revisiting ML-Based TCP in Continuous Integration*
 **Target venue:** [TBD — ICSE / FSE / ISSTA / ASE]
 **Directions active:** A (Flaky-test-aware TCP), B (Federated pretraining), C (LLM-augmented representations), D (Android/mobile CI replication)
+**Author 1:** 1st Author Name
+**Affiliation 1:** Author 1 Affiliation
+**Location 1:** City, Country
+**Email 1:** author1@example.com
+
+**Author 2:** 2nd Author Name
+**Affiliation 2:** Author 2 Affiliation
+**Location 2:** City, Country
+**Email 2:** author2@example.com
+
+**Author 3:** 3rd Author Name
+**Affiliation 3:** Author 3 Affiliation
+**Location 3:** City, Country
+**Email 3:** author3@example.com
 
 ---
 

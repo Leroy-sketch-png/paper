@@ -41,18 +41,76 @@ def split_table_row(line: str):
     return [inline_md_to_tex(c) for c in cells]
 
 
+def strip_wrapping_emphasis(text: str) -> str:
+    text = text.strip()
+    if len(text) >= 2 and text.startswith("*") and text.endswith("*"):
+        return text[1:-1].strip()
+    return text
+
+
+def parse_bold_metadata(line: str):
+    match = re.match(r"^\*\*(.+?):\*\*\s*(.*)$", line.strip())
+    if not match:
+        return None, None
+    return match.group(1).strip().lower(), strip_wrapping_emphasis(match.group(2).strip())
+
+
+def parse_front_matter(lines: list[str]):
+    metadata = {}
+    skipped_lines = set()
+
+    for idx, line in enumerate(lines):
+        label, value = parse_bold_metadata(line)
+        if label is None:
+            continue
+        metadata[label] = value
+        if label == "working title (v1)" or re.match(r"^(author|affiliation|location|email) \d+$", label):
+            skipped_lines.add(idx)
+
+    ordinals = ("1st", "2nd", "3rd")
+    authors = []
+    for index, ordinal in enumerate(ordinals, start=1):
+        authors.append(
+            {
+                "name": metadata.get(f"author {index}", f"{ordinal} Author Name"),
+                "affiliation": metadata.get(f"affiliation {index}", f"Author {index} Affiliation"),
+                "location": metadata.get(f"location {index}", "City, Country"),
+                "email": metadata.get(f"email {index}", f"author{index}@example.com"),
+            }
+        )
+
+    return metadata.get("working title (v1)"), authors, skipped_lines
+
+
+def format_author_block(authors: list[dict[str, str]]) -> str:
+    author_entries = []
+    for author in authors:
+        author_entries.append(
+            r"\textbf{" + esc(author["name"]) + r"}\\"
+            + esc(author["affiliation"]) + r"\\"
+            + esc(author["location"]) + r"\\"
+            + esc(author["email"])
+        )
+    return r"\author{" + r"\and ".join(author_entries) + r"}"
+
+
 def convert(md: str) -> str:
     lines = md.splitlines()
 
     title = "Label Realism, Data Governance, and Representation Shift"
     subtitle = "Revisiting ML-Based Test Case Prioritization for Continuous Integration"
     abstract = ""
+    front_matter_title, authors, metadata_lines = parse_front_matter(lines)
 
     # Capture title from first heading
-    for ln in lines:
-        if ln.startswith("# "):
-            title = ln[2:].strip()
-            break
+    if front_matter_title:
+        title = front_matter_title
+        subtitle = ""
+    else:
+        for ln in lines:
+            if ln.startswith("# "):
+                title = ln[2:].strip()
+                break
 
     out = []
     out.append(r"\documentclass[11pt]{article}")
@@ -68,8 +126,11 @@ def convert(md: str) -> str:
     out.append(r"\setstretch{1.15}")
     out.append(r"\titleformat{\section}{\large\bfseries}{\thesection}{0.5em}{}")
     out.append(r"\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.5em}{}")
-    out.append(r"\title{\textbf{" + esc(title) + r"}\\\large " + esc(subtitle) + "}")
-    out.append(r"\author{Anonymous Submission}")
+    if subtitle:
+        out.append(r"\title{\textbf{" + esc(title) + r"}\\\large " + esc(subtitle) + "}")
+    else:
+        out.append(r"\title{\textbf{" + esc(title) + r"}}")
+    out.append(format_author_block(authors))
     out.append(r"\date{May 2026}")
     out.append(r"\begin{document}")
     out.append(r"\maketitle")
@@ -108,6 +169,9 @@ def convert(md: str) -> str:
 
         # Skip top title and abstract heading; already handled
         if i == 0 and s.startswith("# "):
+            i += 1
+            continue
+        if i in metadata_lines:
             i += 1
             continue
         if s.lower().startswith("## abstract"):

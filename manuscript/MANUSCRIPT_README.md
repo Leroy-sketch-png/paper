@@ -2,12 +2,24 @@
 
 **File:** `manuscript/paper_manuscript.tex`  
 **Generated from:** `manuscript/paper_skeleton.md`  
-**Last updated:** May 4, 2026  
+**Last updated:** May 5, 2026  
 **Status:** Submission-ready draft
 
 ---
 
 ## Quick Start
+
+### Preferred one-command build
+
+From the workspace root:
+
+```bash
+python manuscript/build_submission_pdf.py
+```
+
+This regenerates `manuscript/paper_manuscript.tex` from `manuscript/paper_skeleton.md` and then rebuilds `manuscript/paper_manuscript.pdf`.
+
+If no local LaTeX engine is installed, the script can only reuse an already up-to-date `manuscript/paper_manuscript.pdf`; otherwise it stops and you must compile with a local TeX installation or Overleaf.
 
 ### Compile to PDF (requires LaTeX installation)
 
@@ -114,17 +126,23 @@ If LaTeX is not installed locally, use **Overleaf** (free):
 If you modify `manuscript/paper_skeleton.md` from the workspace root:
 
 ```bash
-python manuscript/generate_latex_manuscript.py
+python manuscript/build_submission_pdf.py
 ```
 
-This overwrites `manuscript/paper_manuscript.tex` with updated content.
+This overwrites `manuscript/paper_manuscript.tex` with updated content and rebuilds `manuscript/paper_manuscript.pdf`.
+
+If you only want to regenerate LaTeX without compiling the PDF:
+
+```bash
+python manuscript/generate_latex_manuscript.py
+```
 
 ---
 
 ## Submission Preparation Checklist
 
 - [ ] Review compiled PDF for formatting and page breaks
-- [ ] Fill in author/affiliation block (currently blank)
+- [ ] Replace the three-author placeholder block with actual names, affiliations, locations, and emails
 - [ ] Add venue-specific references formatting (IEEE/ACM/Springer)
 - [ ] Replace placeholder `[TBD]` references with actual citations
 - [ ] Verify all table and figure captions are present
@@ -158,4 +176,4 @@ paper/
 
 ---
 
-**For questions or edits:** Modify `manuscript/paper_skeleton.md`, then regenerate with `python manuscript/generate_latex_manuscript.py`.
+**For questions or edits:** Modify `manuscript/paper_skeleton.md`, then rebuild with `python manuscript/build_submission_pdf.py`.

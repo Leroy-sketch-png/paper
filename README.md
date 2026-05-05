@@ -38,6 +38,7 @@ The root keeps a small set of intentional entry points for common workflows:
 Run these from the workspace root:
 
 ```bash
+python manuscript/build_submission_pdf.py
 python manuscript/generate_latex_manuscript.py
 python print_results.py
 python comprehensive_results.py
@@ -47,6 +48,6 @@ python direction_b/federated_pretraining_framework.py
 
 ## Working Rules
 
-- Update `manuscript/paper_skeleton.md` first for manuscript changes, then regenerate LaTeX.
+- Update `manuscript/paper_skeleton.md` first for manuscript changes, then rebuild the submission PDF.
 - Prefer scripts and checked artifacts over narrative files when facts conflict.
 - Treat `archive/` as historical context, not the source of current workspace state.
