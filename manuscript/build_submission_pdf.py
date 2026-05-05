@@ -1,6 +1,7 @@
 import shutil
 import subprocess
 import sys
+import os
 from pathlib import Path
 
 
@@ -15,10 +16,35 @@ def run_command(command: list[str], cwd: Path) -> None:
     subprocess.run(command, cwd=cwd, check=True)
 
 
+def candidate_engine_paths(engine: str) -> list[str]:
+    candidates = []
+    on_path = shutil.which(engine)
+    if on_path:
+        candidates.append(on_path)
+
+    local_app_data = os.environ.get("LOCALAPPDATA")
+    program_files = os.environ.get("ProgramFiles")
+    program_files_x86 = os.environ.get("ProgramFiles(x86)")
+
+    if local_app_data:
+        candidates.append(str(Path(local_app_data) / "Programs" / "MiKTeX" / "miktex" / "bin" / "x64" / f"{engine}.exe"))
+    if program_files:
+        candidates.append(str(Path(program_files) / "MiKTeX" / "miktex" / "bin" / "x64" / f"{engine}.exe"))
+        candidates.append(str(Path(program_files) / "MiKTeX 2.9" / "miktex" / "bin" / "x64" / f"{engine}.exe"))
+    if program_files_x86:
+        candidates.append(str(Path(program_files_x86) / "MiKTeX 2.9" / "miktex" / "bin" / "x64" / f"{engine}.exe"))
+
+    for year in (2026, 2025, 2024, 2023):
+        candidates.append(str(Path("C:/texlive") / str(year) / "bin" / "windows" / f"{engine}.exe"))
+
+    return candidates
+
+
 def find_latex_engine() -> str | None:
     for engine in ("pdflatex", "xelatex"):
-        if shutil.which(engine):
-            return engine
+        for candidate in candidate_engine_paths(engine):
+            if Path(candidate).exists():
+                return candidate
     return None
 
 

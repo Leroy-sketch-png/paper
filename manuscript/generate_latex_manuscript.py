@@ -10,18 +10,35 @@ def esc(text: str) -> str:
     # Unescape markdown escapes first
     text = text.replace("\\_", "_")
     repl = {
-        "\\": r"\\textbackslash{}",
-        "&": r"\\&",
-        "%": r"\\%",
-        "$": r"\\$",
-        "#": r"\\#",
-        "_": r"\\_",
-        "{": r"\\{",
-        "}": r"\\}",
-        "~": r"\\textasciitilde{}",
-        "^": r"\\textasciicircum{}",
+        "\\": r"\textbackslash{}",
+        "&": r"\&",
+        "%": r"\%",
+        "$": r"\$",
+        "#": r"\#",
+        "_": r"\_",
+        "{": r"\{",
+        "}": r"\}",
+        "~": r"\textasciitilde{}",
+        "^": r"\textasciicircum{}",
     }
     return "".join(repl.get(ch, ch) for ch in text)
+
+
+def normalize_tex_symbols(text: str) -> str:
+    replacements = {
+        "±": r"$\pm$",
+        "×": r"$\times$",
+        "≤": r"$\leq$",
+        "≥": r"$\geq$",
+        "ρ": r"$\rho$",
+        "Δ": r"$\Delta$",
+        "−": "-",
+        "–": "--",
+        "—": "---",
+    }
+    for source, replacement in replacements.items():
+        text = text.replace(source, replacement)
+    return text
 
 
 def inline_md_to_tex(text: str) -> str:
@@ -29,6 +46,7 @@ def inline_md_to_tex(text: str) -> str:
     text = re.sub(r"\*\*(.+?)\*\*", lambda m: r"\textbf{" + m.group(1) + "}", text)
     text = re.sub(r"\*(.+?)\*", lambda m: r"\textit{" + m.group(1) + "}", text)
     text = re.sub(r"`([^`]+)`", lambda m: r"\texttt{" + m.group(1) + "}", text)
+    text = normalize_tex_symbols(text)
     return text
 
 
