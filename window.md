@@ -4,9 +4,11 @@
 
 This document is a standalone upward-facing research briefing, now through six adversarial loops.
 
-Loop 1 introduced vulnerabilities per claim. Loop 2 escalated: flaky-test label contamination as a first-class attack on the paper's core learning assumptions, transfer hardness distinguished from transfer promise, LLM-augmented representations reframed as a winner-landscape shift. Loop 3 grounded the research: source paper replication package located, FAST non-ML baseline ported and verified, FALCON (ICST 2025) and LRTS (ISSTA 2024) registered as adjacent artifacts. Loop 4 integrated the full artifact ecosystem: DeepOrder registered, Extension Tracks given empirical thresholds, experimental grid codified, and the career-risk framing introduced (winning only ML-vs-ML is insufficient when FALCON and heuristic baselines are active). Loop 5 grounded Direction A in empirical reality: FAST-log baseline completed (all 10 subjects, 10 reps each), source paper's 11 subjects fully identified, IDoFT cross-reference completed (9/11 subjects have zero coverage), and FALCON artifact access confirmed. Loop 6 converts the work from critique to editor-ready synthesis: a publication thesis, contribution contract, baseline gate, implementation priority, and explicit done-criteria for a realism-correction paper.
+Loop 1 introduced vulnerabilities per claim. Loop 2 escalated: flaky-test label contamination as a first-class attack on the paper's core learning assumptions, transfer hardness distinguished from transfer promise, LLM-augmented representations reframed as a winner-landscape shift. Loop 3 grounded the research: source paper replication package located, FAST non-ML baseline ported and verified, FALCON (ICST 2026) and LRTS (ISSTA 2024) registered as adjacent artifacts. Loop 4 integrated the full artifact ecosystem: DeepOrder registered, Extension Tracks given empirical thresholds, experimental grid codified, and the career-risk framing introduced (winning only ML-vs-ML is insufficient when FALCON and heuristic baselines are active). Loop 5 grounded Direction A in empirical reality: FAST-log baseline completed (all 10 subjects, 10 reps each), source paper's 11 subjects fully identified, IDoFT cross-reference completed (9/11 subjects have zero coverage), and FALCON artifact access confirmed. Loop 6 converts the work from critique to editor-ready synthesis: a publication thesis, contribution contract, baseline gate, implementation priority, and explicit done-criteria for a realism-correction paper.
 
 Designed to be forwarded without local workspace context.
+
+Current manuscript state: formal references are integrated in the source, the submission PDF currently builds cleanly to 11 pages, and the final bibliography page has already been stabilized.
 
 ## Source
 
@@ -20,7 +22,7 @@ Designed to be forwarded without local workspace context.
 
 - **Live artifact: FAST repo (icse18-FAST/FAST) — cloned locally at `FAST/`, ported to Python 3.10.** Implements 12 TCP algorithms: FAST-pw, FAST-one, FAST-log, FAST-sqrt, FAST-all (similarity-based, black-box and white-box), plus GT, GA, GA-S, ART-F, ART-D (white-box), STR, I-TSD (black-box). ICSE 2018. These are non-ML, similarity-based baselines — directly relevant as the pre-ML TCP landscape that the source paper's 11 ML techniques are competing against. **Verified output: `python py/prioritize.py flex_v3 bbox FAST-pw 3` → APFD ~0.878–0.948.**
 
-- **Adjacent artifact: FALCON** (ICST 2025, Zenodo 18897073). Submodular optimization + UniXcoder embeddings for TCP. Paper reports 16.4% higher median APFD over similarity-based methods (0.731 vs 0.628) on Defects4J. *(Artifact verification, May 3 2026: extracted `comprehensive_results_all_projects.csv` confirms FALCON-unixcoder-cosine project-median 0.731 vs FAST-pw project-median 0.602 across 6 projects.  Paper-abstract aggregation basis differs from project-level summary, but directional conclusion is independent of aggregation choice.)* **Open access confirmed (CC-BY 4.0): `falcon.zip` (24.1 MB), freely downloadable without login.** Covers 6 Defects4J projects: Chart, Closure, Lang, Math, Mockito, Time — 5 of 6 overlap with our FAST subjects. Contains FAST-pw/log/one/sqrt/all baselines alongside FALCON/GRAPHCUT/LOGDET variants with 5 embedding models × 2 distance metrics. `comprehensive_results_all_projects.csv` is directly importable for baseline comparison. Published March 2026. Directly relevant to Direction C (LLM-augmented representations). Sets the semantic baseline ceiling that any new representation method must clear.
+- **Adjacent artifact: FALCON** (ICST 2026, Zenodo 18897073). Submodular optimization + UniXcoder embeddings for TCP. Paper reports 16.4% higher median APFD over similarity-based methods (0.731 vs 0.628) on Defects4J. *(Artifact verification, May 3 2026: extracted `comprehensive_results_all_projects.csv` confirms FALCON-unixcoder-cosine project-median 0.731 vs FAST-pw project-median 0.602 across 6 projects. Paper-abstract aggregation basis differs from project-level summary, but directional conclusion is independent of aggregation choice.)* **Open access confirmed (CC-BY 4.0): `falcon.zip` (24.1 MB), freely downloadable without login.** Covers 6 Defects4J projects: Chart, Closure, Lang, Math, Mockito, Time — 5 of 6 overlap with our FAST subjects. Contains FAST-pw/log/one/sqrt/all baselines alongside FALCON/GRAPHCUT/LOGDET variants with 5 embedding models × 2 distance metrics. `comprehensive_results_all_projects.csv` is directly importable for baseline comparison. Published March 2026. Directly relevant to Direction C (LLM-augmented representations). Sets the semantic baseline ceiling that any new representation method must clear.
 
 - **Adjacent artifact: LRTS** (ISSTA 2024, Zenodo 12662090, GitHub: lrtsuser/LRTS). Long-Running Test Suites dataset: **21,255 CI builds, 57,437 test-suite runs, average 6.5 hours per run**, 10 large-scale Java projects, explicitly analyzing flaky tests and long-running suites. Key finding: simple policies (prioritize faster tests that recently failed) can outperform sophisticated ML in some contexts — a direct challenge to any narrative that ML complexity yields reliable gains. Directly relevant to Directions A (flaky-test-aware TCP) and D (Android/mobile CI replication as contrast case).
 
@@ -35,7 +37,7 @@ Designed to be forwarded without local workspace context.
 | Source paper | In hand | `references/2311.13413v1.pdf`, converted to `references/2311.13413v1.md` |
 | Source paper replication package | Located — **files restricted** | Zenodo 7036507; structure confirmed: \collect_data/\, l/\, \supervised_learning/\, \origin/\ (11 projects), \smote/\, esult/\; requires Understand + Ranklib; login required to download |
 | FAST (ICSE 2018) non-ML baseline | **Complete** | `FAST/` — FAST-pw: done ✓ all 10 subjects; FAST-log: done ✓ all 10 subjects (May 3 2026) |
-| FALCON (ICST 2025) artifact | **Open access confirmed** | Zenodo 18897073 — CC-BY 4.0; `falcon.zip` (24.1 MB); covers Chart, Closure, Lang, Math, Mockito, Time (Defects4J); includes FAST baselines + FALCON/GRAPHCUT/LOGDET variants; `comprehensive_results_all_projects.csv` (17.4 kB) directly usable; downloadable without login |
+| FALCON (ICST 2026) artifact | **Open access confirmed** | Zenodo 18897073 — CC-BY 4.0; `falcon.zip` (24.1 MB); covers Chart, Closure, Lang, Math, Mockito, Time (Defects4J); includes FAST baselines + FALCON/GRAPHCUT/LOGDET variants; `comprehensive_results_all_projects.csv` (17.4 kB) directly usable; downloadable without login |
 | LRTS (ISSTA 2024) dataset | Located | Zenodo 12662090 / GitHub lrtsuser/LRTS — not yet downloaded |
 | DeepOrder (ICSME 2021) artifact | Located | GitHub AizazSharif/DeepOrder-ICSME21 — not yet cloned |
 | TCP-CI dataset | Located (reference) | Cited in federated pretraining track; exact Zenodo/GitHub not yet confirmed |
@@ -45,8 +47,8 @@ Designed to be forwarded without local workspace context.
 | FAST-log baseline table | **Done** | bbox mode, 10 subjects, 10 reps each (last-10 for Defects4J; contaminated rows excluded) — see Hard Numbers section |
 | Source paper 11 subjects | **Confirmed** | More-failure: bcel, jedis, jsprit, nfe, spring-data-redis / Less-failure: csv, dbcp, text, java-faker, jsoup, maxwell |
 | IDoFT coverage for Direction A | **Critical gap confirmed** | 9/11 subjects NOT in IDoFT; Direction A requires alternative flaky-label source (DeFlaker, NonDex, CI history mining, or direct re-execution) |
-| Paper skeleton / draft | **Done** | See manuscript/paper_skeleton.md |
-**Highest-readiness direction:** Direction B (federated pretraining) — source paper's strongest clue, replication package in hand, concept grounded. **Highest-urgency gap:** Direction A flaky-label source — IDoFT covers only 2/11 source paper subjects; DeFlaker/NonDex tooling or CI log mining needed before Direction A can run. Direction D Android CI data still missing.
+| Paper skeleton / draft | **Done** | See manuscript/paper_skeleton.md; formal references integrated and manuscript synchronized with the current PDF build |
+**Highest-readiness direction:** Direction C (representation shift) — FALCON is artifact-verified and a five-subject proxy probe has already executed, so the next step is a stronger contextual rerun rather than a cold start. **Highest-urgency gap:** Direction A flaky-label source — IDoFT covers only 2/11 source paper subjects; DeFlaker/NonDex tooling or CI log mining needed before Direction A can run. Direction D Android CI data still missing.
 
 ## Scope In Plain Terms
 
@@ -70,7 +72,7 @@ Designed to be forwarded without local workspace context.
 
 - FAST = similarity-based non-ML TCP framework (ICSE 2018). 12 algorithms. Strong APFD at minimal cost. The pre-ML baseline tier.
 
-- FALCON = submodular + UniXcoder embedding TCP (ICST 2025). Currently the highest-bar semantic baseline: 0.731 median APFD on Defects4J (paper-level); artifact-verified per-project median 0.731 FALCON vs 0.602 FAST-pw.
+- FALCON = submodular + UniXcoder embedding TCP (ICST 2026). Currently the highest-bar semantic baseline: 0.731 median APFD on Defects4J (paper-level); artifact-verified per-project median 0.731 FALCON vs 0.602 FAST-pw.
 
 - DeepOrder = deep learning TCP for CI (ICSME 2021). Historical test execution records → regression-style neural ranking.
 
@@ -359,7 +361,7 @@ These are not from the source paper. They are the external findings that most di
 
 > FALCON achieves 16.4% higher median APFD than state-of-the-art similarity-based methods (0.731 vs. 0.628) while requiring only 4.45s median runtime. Among five embedding models, UniXcoder with cosine similarity provides the best effectiveness-efficiency trade-off.
 
-— *FALCON: Efficient Test Case Prioritization via Submodular Optimization*, ICST 2025 (Zenodo 18897073)
+— *FALCON: Efficient Test Case Prioritization via Submodular Optimization*, ICST 2026 (Zenodo 18897073)
 
 **Why this snip matters:** This is the current semantic baseline ceiling. An LLM-augmented method must beat 0.731 median APFD on Defects4J or justify itself by robustness, not raw score.
 
@@ -604,7 +606,7 @@ The source paper is a strong unified benchmark but a narrow one: carefully execu
 
 - replication-package-zenodo-7036507
 
-- falcon-icst2025
+- falcon-icst2026
 
 - lrts-issta2024
 

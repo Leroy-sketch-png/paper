@@ -3,7 +3,7 @@
 **File:** `manuscript/paper_manuscript.tex`  
 **Generated from:** `manuscript/paper_skeleton.md`  
 **Last updated:** May 5, 2026  
-**Status:** Submission-ready draft
+**Status:** Submission-ready draft with formal references
 **Target venue:** ISSTA
 
 ---
@@ -122,6 +122,10 @@ If LaTeX is not installed locally, use **Overleaf** (free):
 - The abstract now foregrounds the executed Direction C proxy result instead of implying four fully executed tracks
 - The conclusion now ends with a lightweight adoption protocol for practitioners
 
+**References / final-page state**
+- The inline references section is now formalized in `manuscript/paper_skeleton.md` and emits a real bibliography in the generated LaTeX
+- The generated PDF currently builds to 11 pages, and the final bibliography page has been stabilized under the IEEE-style output pipeline
+
 **Other sections (Sections 4-5, 7):**
 - Evidence-status framing and execution protocols for the unexecuted realism tracks
 - Written to qualify benchmark recommendations without overstating current execution status
@@ -167,12 +171,12 @@ python manuscript/generate_latex_manuscript.py
 
 ## Submission Preparation Checklist
 
-- [ ] Review compiled PDF for formatting and page breaks
+- [x] Rebuild and review the compiled PDF for formatting and page breaks
 - [ ] Replace the three-author placeholder block with actual names, affiliations, locations, and emails
-- [ ] Add venue-specific references formatting (IEEE/ACM/Springer)
+- [x] Formalize references directly in the manuscript source
 - [ ] Replace any remaining unresolved metadata or dataset placeholders once the missing source inputs exist
 - [ ] Verify all table and figure captions are present
-- [ ] Check for widow/orphan lines and manual breaks if needed
+- [ ] Optionally tighten long URLs and remaining box warnings if a stricter final typography pass is needed
 - [ ] Proof-read for typos and consistency
 
 ---
@@ -183,7 +187,9 @@ python manuscript/generate_latex_manuscript.py
 - Requires `pdflatex` or `xelatex` engine
 - Default uses Times Roman font via `times` package (portable)
 - No external figures included (table-only document currently)
-- References section is a stub (add BibTeX `.bib` file if needed)
+- Author names and affiliations are still placeholders
+- References are maintained inline in `manuscript/paper_skeleton.md` rather than via a separate `.bib` file
+- The build is stable, but the LaTeX log still reports non-fatal underfull/overfull box warnings on dense prose and long URLs
 
 ---
 

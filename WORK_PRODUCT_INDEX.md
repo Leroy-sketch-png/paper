@@ -3,9 +3,11 @@
 **Total Artifacts:** 25+ files  
 **Total Size:** 300+ KB  
 **Timeline:** 2 sessions (May 1-2, 2026)  
-**Status:** Historical planning index from May 1-2, 2026
+**Status:** Historical planning index from May 1-2, 2026, with current pointers added for the live manuscript state
 
 **Note:** Point-in-time progress reports, summaries, and execution roadmaps from this planning loop now live under `archive/status/` and `archive/plans/`. Treat readiness estimates below as historical unless current artifacts confirm them.
+
+**Current-use note:** For the live manuscript state, synchronized submission checklist, and verified baseline ledger, use `manuscript/MANUSCRIPT_README.md` and `EXECUTION_SUMMARY.md`. The timed phase checklists below are historical planning context, not the current action queue.
 
 **Current layout note:** Active analysis implementations now live under `scripts/analysis/`; active direction-specific framework material now lives under `direction_a/`, `direction_b/`, and `direction_c/`; legacy root filenames remain only for the analysis entry points.
 
@@ -140,15 +142,15 @@
 **Then execute:** `direction_c/direction_c_compute_embeddings.py`
 
 ### For Publication Readiness
-**Manuscript:** `manuscript/paper_skeleton.md` (9/9 sections complete, only data gaps)  
-**Briefing:** `window.md` (TCP history + research context)  
-**Baseline:** `EXECUTION_SUMMARY.md` (all 6-tier baselines verified)  
+**Manuscript:** `manuscript/paper_skeleton.md` (submission-ready narrative source with formal references)  
+**Briefing:** `window.md` (current research briefing aligned with the manuscript)  
+**Baseline:** `EXECUTION_SUMMARY.md` (verified baselines plus current execution-status ledger)  
 **Two-session summary:** `archive/status/TWO_SESSION_RESEARCH_SUMMARY.md` (comprehensive progress)
 
 ### For Other Directions (A, B, D)
-**Direction A (Flaky Tests):** `flaky_detection_framework.pdf` + simulation  
+**Direction A (Flaky Tests):** `direction_a/flaky_detection_protocol.py` + simulation scaffolding  
 **Direction B (Federated Learning):** `direction_b/federated_pretraining_framework.py` + overhead analysis  
-**Direction D (Mobile CI):** `EXECUTION_SUMMARY.md` Section 4 (staged LRTS interim)
+**Direction D (Mobile CI):** `manuscript/paper_skeleton.md` Section 7 + `EXECUTION_SUMMARY.md` (staged LRTS interim)
 
 ### For Blocking Issues
 **If torch won't install:** Read `direction_c/direction_c_install_strategies.py` (4 fallbacks)  

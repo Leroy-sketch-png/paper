@@ -1,8 +1,8 @@
-# Execution Summary — May 3, 2026
+# Execution Summary — May 5, 2026
 
 ## Status Overview
 
-**Phase:** Artifact acquisition and baseline validation complete. Manuscript skeleton fully drafted with verified numbers. Ready for directions A–D execution (flaky labels, federated pretraining, LLM representations, mobile CI).
+**Phase:** Baseline validation complete, manuscript synchronized, and one proxy Direction C representation experiment executed. Directions A and B remain protocol-backed, Direction C still needs a stronger contextual rerun, and Direction D remains a staged extension pending dataset admission.
 
 ---
 
@@ -27,13 +27,15 @@
 | **D4J fault matrix analysis** | chart: 27 bugs/49 tests (2.15 faults/bug), closure: 102 bugs/54 tests (1.26 faults/bug), lang: 40 bugs/24 tests (1.08 faults/bug), math: 8 bugs/15 tests (2.14 faults/bug), time: 28 bugs/21 tests (1.11 faults/bug) | Explains heterogeneity: closure has many low-fault bugs; chart/math have fewer bugs but more faults per bug |
 | **FAST variants comparison** | all 0.6232, log 0.6283, pw 0.6024, sqrt 0.605, one 0.591 (D4J medians) | log/all slightly outperform pw; one is weakest |
 | **Comprehensive results table** | All methods × all subjects with statistical summaries | 6-tier baseline grid verified |
+| **Direction C proxy representation probe** | Mean ΔAPFD = -0.3283 (95% CI [-0.4866, -0.1699]), Cohen's d = -1.94, mean Spearman ρ = -0.060 | Executed on 2,938 test cases across five SIR subjects; vocabulary-anchored BPE embeddings underperform FAST-pw and do not preserve the original ranking logic |
 
 ### Manuscripts
 
 | File | Status | Key Updates |
 |---|---|---|
-| `manuscript/paper_skeleton.md` | 9/9 sections written, zero placeholders | Section 2.1 FAST paragraph: updated with n=30 SIR numbers, full D4J evaluation, FFF oracle, Random-30 bounds. Section 2.4 FALCON: artifact-verified per-project APFDs (Chart 0.7263, Closure 0.7002, Lang 0.7543, Math 0.6224, Mockito 0.7362, Time 0.7944) vs FAST-pw (0.6121, 0.6196, 0.5052, 0.5589, 0.6569, 0.5927). Section 8.3 (LLM representations): clarified paper-level vs artifact-level aggregation. Section 9 (Conclusion): updated with both paper and artifact numbers, no hallucinations. |
-| `window.md` | 600+ lines complete | Updated FALCON mentions with artifact aggregation caveat. Paper-abstract 0.731 vs 0.628 retained as primary; artifact-verified 0.731 vs 0.602 added as validation basis. |
+| `manuscript/paper_skeleton.md` | 9/9 sections written, formal references integrated | Section 2.1 FAST paragraph: updated with n=30 SIR numbers, full D4J evaluation, FFF oracle, Random-30 bounds. Section 2.4 FALCON: active text aligned to ICST 2026 metadata with artifact-verified per-project APFDs (Chart 0.7263, Closure 0.7002, Lang 0.7543, Math 0.6224, Mockito 0.7362, Time 0.7944) vs FAST-pw (0.6121, 0.6196, 0.5052, 0.5589, 0.6569, 0.5927). Section 6.3 reports the executed Direction C proxy probe. Section 8.3 and Section 9 preserve the paper-level vs artifact-level aggregation caveat. |
+| `manuscript/MANUSCRIPT_README.md` | Synchronized | Build workflow, evidence snapshot, and submission checklist now reflect the formal references pass and stable 11-page manuscript build. |
+| `window.md` | Current-facing briefing synchronized | FALCON references aligned to ICST 2026, manuscript-state notes refreshed, and semantic-baseline caveats retained. |
 | `artifacts/heuristic_baselines.csv` | Complete | FFF oracle and Random-30 statistics for all 10 subjects |
 | `print_results.py` | Working | Master results table generator: consolidates FAST-pw, FAST-log, FFF, Random-30 across all subjects |
 
@@ -47,8 +49,8 @@
 | `artifacts/falcon.zip` | 24.1 MB, verified valid | Downloaded into the workspace artifacts folder |
 | `artifacts/falcon_comprehensive_results_all_projects.csv` | Extracted and parsed | 17.4 kB, verified as importable per-project summary |
 | **`bootstrap_ci.py`** | **Complete + executed** | **Computes 95% bootstrap CIs for SIR FAST results; 1000 resamples per subject; percentile-based** |
-| **`direction_a/flaky_detection_protocol.py`** | **Complete + executed** | **Defines re-execution protocol for flaky-test detection (Direction A); simulates on all 10 subjects; documents IDoFT coverage gaps** |
-| **`direction_b/federated_pretraining_framework.py`** | **Complete + executed** | **Designs FedAvg protocol for Direction B; estimates communication overhead and transfer retention ratios** |
+| **`direction_a/flaky_detection_protocol.py`** | **Protocol complete + simulated** | **Defines the re-execution protocol for flaky-test detection (Direction A), includes simulation scaffolding, and documents IDoFT coverage gaps; no cleaned-label real-data rerun has been completed yet** |
+| **`direction_b/federated_pretraining_framework.py`** | **Framework complete + simulated** | **Designs the FedAvg-style protocol for Direction B and estimates communication overhead and transfer-retention ratios; no federated pretraining run on the benchmark subjects has been completed yet** |
 | **`comprehensive_results.py`** | **Complete + executed** | **Generates master results table with all FAST variants + FALCON + heuristics; provides per-method summaries** |
 
 ---
@@ -81,7 +83,8 @@
 **Direction C (LLM-augmented representations):**
 - FALCON artifact fully acquired and verified
 - Reference FALCON numbers: 0.731 median APFD (paper level), 0.731 project-median (artifact level)
-- Ready to implement: substitute UniXcoder embeddings for handcrafted CI features; re-evaluate source-paper methods under new representation; compare against FALCON on Defects4J overlap (Chart, Closure, Lang, Math, Time)
+- Proxy BPE experiment executed on five SIR subjects; it underperforms FAST-pw and establishes a lower-bound representation result rather than a full contextual rerun
+- Ready to implement next: substitute stronger contextual embeddings for handcrafted CI features; re-evaluate source-paper methods under new representation; compare against FALCON on Defects4J overlap (Chart, Closure, Lang, Math, Time)
 
 **Direction D (Mobile CI, staged extension):**
 - Admission criteria explicit (public dataset, reproducible CI, per-commit failure labels)
@@ -118,10 +121,10 @@
    - CI-log mining on others (Apache Commons, java-faker, jsoup, maxwell, jsprit, nfe)
    - Recompute rAPFD on cleaned labels; quantify delta per method
 
-3. **Execute Direction C (LLM representations)**
-   - Install UniXcoder embedding model; encode SIR and D4J test sources
-   - Re-evaluate MART and at least 2–3 other source-paper methods under new representations
-   - Compare ranking order before/after; measure Spearman ρ correlation
+3. **Strengthen Direction C beyond the proxy probe**
+   - Install a full contextual encoder path (UniXcoder and/or CodeBERT) for shared subjects
+   - Re-evaluate MART and at least 2–3 other source-paper methods under the stronger representation
+   - Compare ranking order before/after; measure Spearman ρ correlation and the FAST/FALCON gap
 
 4. **Execute Direction B (federated pretraining)** (dependent on Understand access)
    - Replicate centralized pretraining from source paper
@@ -132,10 +135,10 @@
    - LRTS results on long-running suites (within-Java stress case)
    - Android dataset search (if found, execute Direction D; otherwise finalize as staged extension)
 
-6. **Polish and submit**
-   - Verify all tables include six-tier baseline grid
+6. **Finalize the submission package**
+   - Replace placeholder author metadata
    - Cross-check numerical consistency across manuscript/paper_skeleton.md, window.md, artifacts/heuristic_baselines.csv
-   - Finalize references and artifact links
+   - Do a final proof pass on the PDF, references, and artifact links
 
 ---
 
@@ -187,6 +190,6 @@
 
 ---
 
-**Document version:** 1  
-**Last updated:** May 3, 2026  
-**Status:** All executable experiments complete. Manuscript draft complete. Ready for directions A–D. Awaiting Understand license for MART/ACER-PA access (or explicit access-limitation caveat).
+**Document version:** 2  
+**Last updated:** May 5, 2026  
+**Status:** Baselines, manuscript synchronization, and the proxy Direction C probe are complete. Directions A and B remain protocol-backed, Direction D remains staged, and MART/ACER-PA reruns still depend on Understand access or an explicit access-limitation caveat.
