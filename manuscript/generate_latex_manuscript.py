@@ -41,12 +41,48 @@ def normalize_tex_symbols(text: str) -> str:
     return text
 
 
+def strip_heading_number(text: str) -> str:
+    return re.sub(r"^\d+(?:\.\d+)*\.?\s+", "", text).strip()
+
+
+def strip_table_label(text: str) -> str:
+    return re.sub(r"^Table\s+[A-Za-z0-9]+\s*(?:—|--+|-)\s*", "", text).strip()
+
+
+def bibliography_key(text: str, index: int) -> str:
+    key = re.sub(r"[^A-Za-z0-9]+", "", text).lower()
+    return key or f"ref{index}"
+
+
+def is_special_block_start(line: str) -> bool:
+    stripped = line.strip()
+    return (
+        stripped == ""
+        or stripped == "---"
+        or stripped.startswith("#")
+        or stripped.startswith("> ")
+        or stripped.startswith("- ")
+        or re.match(r"^\d+\.\s+", stripped) is not None
+        or is_table_line(line)
+    )
+
+
 def inline_md_to_tex(text: str) -> str:
+    math_segments = []
+
+    def stash_math(match: re.Match[str]) -> str:
+        placeholder = f"@@MATH{len(math_segments)}@@"
+        math_segments.append(match.group(0))
+        return placeholder
+
+    text = re.sub(r"\$[^$]+\$", stash_math, text)
     text = esc(text)
     text = re.sub(r"\*\*(.+?)\*\*", lambda m: r"\textbf{" + m.group(1) + "}", text)
     text = re.sub(r"\*(.+?)\*", lambda m: r"\textit{" + m.group(1) + "}", text)
     text = re.sub(r"`([^`]+)`", lambda m: r"\texttt{" + m.group(1) + "}", text)
     text = normalize_tex_symbols(text)
+    for index, segment in enumerate(math_segments):
+        text = text.replace(f"@@MATH{index}@@", segment)
     return text
 
 
@@ -82,7 +118,7 @@ def parse_front_matter(lines: list[str]):
         if label is None:
             continue
         metadata[label] = value
-        if label == "working title (v1)" or re.match(r"^(author|affiliation|location|email) \d+$", label):
+        if label in {"working title (v1)", "target venue", "directions active"} or re.match(r"^(author|affiliation|location|email) \d+$", label):
             skipped_lines.add(idx)
 
     ordinals = ("1st", "2nd", "3rd")
@@ -104,10 +140,10 @@ def format_author_block(authors: list[dict[str, str]]) -> str:
     author_entries = []
     for author in authors:
         author_entries.append(
-            r"\textbf{" + esc(author["name"]) + r"}\\"
-            + esc(author["affiliation"]) + r"\\"
+            r"\IEEEauthorblockN{" + esc(author["name"]) + r"}"
+            + r"\IEEEauthorblockA{" + esc(author["affiliation"]) + r"\\"
             + esc(author["location"]) + r"\\"
-            + esc(author["email"])
+            + esc(author["email"]) + r"}"
         )
     return r"\author{" + r"\and ".join(author_entries) + r"}"
 
@@ -131,25 +167,23 @@ def convert(md: str) -> str:
                 break
 
     out = []
-    out.append(r"\documentclass[11pt]{article}")
-    out.append(r"\usepackage[a4paper,margin=1in]{geometry}")
-    out.append(r"\usepackage{setspace}")
+    out.append(r"\documentclass[10pt,conference]{IEEEtran}")
     out.append(r"\usepackage{booktabs}")
-    out.append(r"\usepackage{longtable}")
     out.append(r"\usepackage{array}")
+    out.append(r"\usepackage{cite}")
     out.append(r"\usepackage{hyperref}")
-    out.append(r"\usepackage{titlesec}")
     out.append(r"\usepackage{enumitem}")
-    out.append(r"\usepackage{times}")
-    out.append(r"\setstretch{1.15}")
-    out.append(r"\titleformat{\section}{\large\bfseries}{\thesection}{0.5em}{}")
-    out.append(r"\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.5em}{}")
+    out.append(r"\usepackage{graphicx}")
+    out.append(r"\usepackage{balance}")
+    out.append(r"\renewcommand{\arraystretch}{1.08}")
     if subtitle:
-        out.append(r"\title{\textbf{" + esc(title) + r"}\\\large " + esc(subtitle) + "}")
+        out.append(r"\title{" + esc(title) + r"\\" + esc(subtitle) + "}")
+    elif ":" in title:
+        lead, trail = [part.strip() for part in title.split(":", 1)]
+        out.append(r"\title{" + esc(lead) + r":\\" + esc(trail) + "}")
     else:
-        out.append(r"\title{\textbf{" + esc(title) + r"}}")
+        out.append(r"\title{" + esc(title) + r"}")
     out.append(format_author_block(authors))
-    out.append(r"\date{May 2026}")
     out.append(r"\begin{document}")
     out.append(r"\maketitle")
 
@@ -157,6 +191,11 @@ def convert(md: str) -> str:
     in_itemize = False
     in_enum = False
     in_quote = False
+    in_bibliography = False
+    in_references_section = False
+    last_list_item_index = None
+    pending_table_caption = None
+    bibliography_index = 1
 
     # Find and capture abstract block from markdown
     abs_start = None
@@ -199,12 +238,17 @@ def convert(md: str) -> str:
             continue
 
         if s == "---":
+            if in_bibliography:
+                out.append(r"\end{thebibliography}")
+                in_bibliography = False
+                in_references_section = False
             if in_itemize:
                 out.append(r"\end{itemize}")
                 in_itemize = False
             if in_enum:
                 out.append(r"\end{enumerate}")
                 in_enum = False
+            last_list_item_index = None
             if in_quote:
                 out.append(r"\end{quote}")
                 in_quote = False
@@ -213,6 +257,16 @@ def convert(md: str) -> str:
             continue
 
         # Tables
+        bold_only = re.match(r"^\*\*(.+?)\*\*$", s)
+        if bold_only:
+            next_idx = i + 1
+            while next_idx < len(lines) and lines[next_idx].strip() == "":
+                next_idx += 1
+            if next_idx < len(lines) and is_table_line(lines[next_idx]) and bold_only.group(1).strip().lower().startswith("table"):
+                pending_table_caption = inline_md_to_tex(strip_table_label(bold_only.group(1).strip()))
+                i += 1
+                continue
+
         if is_table_line(line):
             tbl_lines = []
             while i < len(lines) and is_table_line(lines[i]):
@@ -224,49 +278,93 @@ def convert(md: str) -> str:
                 for tr in tbl_lines[2:]:
                     body.append(split_table_row(tr))
                 cols = len(header)
-                colspec = "|" + "|".join(["p{" + f"{(0.92/cols):.2f}" + r"\linewidth}"] * cols) + "|"
-                out.append(r"\begin{longtable}{" + colspec + "}")
+                use_star_table = cols >= 4
+                env_name = "table*" if use_star_table else "table"
+                width_unit = r"\textwidth" if use_star_table else r"\columnwidth"
+                if cols >= 5:
+                    usable_width = 0.94
+                    out.append(r"\begin{" + env_name + r"}[t]")
+                    out.append(r"\centering")
+                    if pending_table_caption is not None:
+                        out.append(r"\caption{" + pending_table_caption + r"}")
+                        pending_table_caption = None
+                    out.append(r"\scriptsize")
+                    out.append(r"\setlength{\tabcolsep}{3pt}")
+                elif cols >= 3:
+                    usable_width = 0.96
+                    out.append(r"\begin{" + env_name + r"}[t]")
+                    out.append(r"\centering")
+                    if pending_table_caption is not None:
+                        out.append(r"\caption{" + pending_table_caption + r"}")
+                        pending_table_caption = None
+                    out.append(r"\footnotesize")
+                    out.append(r"\setlength{\tabcolsep}{4pt}")
+                else:
+                    usable_width = 0.98
+                    out.append(r"\begin{" + env_name + r"}[t]")
+                    out.append(r"\centering")
+                    if pending_table_caption is not None:
+                        out.append(r"\caption{" + pending_table_caption + r"}")
+                        pending_table_caption = None
+                    out.append(r"\footnotesize")
+                    out.append(r"\setlength{\tabcolsep}{5pt}")
+                colspec = "|" + "|".join(["p{" + f"{(usable_width/cols):.2f}" + width_unit + "}"] * cols) + "|"
+                out.append(r"\begin{tabular}{" + colspec + "}")
                 out.append(r"\hline")
                 out.append(" & ".join([r"\textbf{" + h + "}" for h in header]) + r" \\")
                 out.append(r"\hline")
-                out.append(r"\endfirsthead")
-                out.append(r"\hline")
-                out.append(" & ".join([r"\textbf{" + h + "}" for h in header]) + r" \\")
-                out.append(r"\hline")
-                out.append(r"\endhead")
                 for row in body:
                     row = row + [""] * (cols - len(row))
                     out.append(" & ".join(row[:cols]) + r" \\")
                     out.append(r"\hline")
-                out.append(r"\end{longtable}")
+                out.append(r"\end{tabular}")
+                out.append(r"\normalsize")
+                out.append(r"\setlength{\tabcolsep}{6pt}")
+                out.append(r"\end{" + env_name + r"}")
                 out.append("")
             continue
 
         # Headings
         if s.startswith("## "):
+            heading_text = strip_heading_number(s[3:].strip())
+            if in_bibliography:
+                out.append(r"\end{thebibliography}")
+                in_bibliography = False
+                in_references_section = False
             if in_itemize:
                 out.append(r"\end{itemize}")
                 in_itemize = False
             if in_enum:
                 out.append(r"\end{enumerate}")
                 in_enum = False
+            last_list_item_index = None
             if in_quote:
                 out.append(r"\end{quote}")
                 in_quote = False
-            out.append(r"\section{" + inline_md_to_tex(s[3:].strip()) + "}")
+            if heading_text.lower().startswith("references"):
+                out.append(r"\balance")
+                in_references_section = True
+            else:
+                in_references_section = False
+                out.append(r"\section{" + inline_md_to_tex(heading_text) + "}")
             i += 1
             continue
         if s.startswith("### "):
+            if in_bibliography:
+                out.append(r"\end{thebibliography}")
+                in_bibliography = False
+                in_references_section = False
             if in_itemize:
                 out.append(r"\end{itemize}")
                 in_itemize = False
             if in_enum:
                 out.append(r"\end{enumerate}")
                 in_enum = False
+            last_list_item_index = None
             if in_quote:
                 out.append(r"\end{quote}")
                 in_quote = False
-            out.append(r"\subsection{" + inline_md_to_tex(s[4:].strip()) + "}")
+            out.append(r"\subsection{" + inline_md_to_tex(strip_heading_number(s[4:].strip())) + "}")
             i += 1
             continue
         if s.startswith("#### "):
@@ -276,10 +374,11 @@ def convert(md: str) -> str:
             if in_enum:
                 out.append(r"\end{enumerate}")
                 in_enum = False
+            last_list_item_index = None
             if in_quote:
                 out.append(r"\end{quote}")
                 in_quote = False
-            out.append(r"\subsubsection{" + inline_md_to_tex(s[5:].strip()) + "}")
+            out.append(r"\subsubsection{" + inline_md_to_tex(strip_heading_number(s[5:].strip())) + "}")
             i += 1
             continue
 
@@ -289,6 +388,7 @@ def convert(md: str) -> str:
                 out.append(r"\begin{quote}")
                 in_quote = True
             out.append(inline_md_to_tex(s[2:].strip()))
+            last_list_item_index = None
             i += 1
             continue
         else:
@@ -298,6 +398,15 @@ def convert(md: str) -> str:
 
         # Ordered list
         if re.match(r"^\d+\.\s+", s):
+            if in_references_section:
+                if not in_bibliography:
+                    out.append(r"\begin{thebibliography}{99}")
+                    in_bibliography = True
+                item = re.sub(r"^\d+\.\s+", "", s)
+                out.append(r"\bibitem{" + bibliography_key(item, bibliography_index) + r"} " + inline_md_to_tex(item))
+                bibliography_index += 1
+                i += 1
+                continue
             if not in_enum:
                 if in_itemize:
                     out.append(r"\end{itemize}")
@@ -306,36 +415,86 @@ def convert(md: str) -> str:
                 in_enum = True
             item = re.sub(r"^\d+\.\s+", "", s)
             out.append(r"\item " + inline_md_to_tex(item))
+            last_list_item_index = len(out) - 1
             i += 1
             continue
         else:
             if in_enum:
+                if (
+                    s
+                    and not s.startswith("- ")
+                    and not s.startswith("> ")
+                    and not s.startswith("#")
+                    and not is_table_line(line)
+                    and s != "---"
+                    and last_list_item_index is not None
+                ):
+                    out[last_list_item_index] += " " + inline_md_to_tex(s)
+                    i += 1
+                    continue
                 out.append(r"\end{enumerate}")
                 in_enum = False
+                last_list_item_index = None
 
         # Unordered list
         if s.startswith("- "):
+            if in_references_section:
+                if not in_bibliography:
+                    out.append(r"\begin{thebibliography}{99}")
+                    in_bibliography = True
+                item = s[2:].strip()
+                label_match = re.match(r"^\[([^\]]+)\]\s*(.*)$", item)
+                if label_match:
+                    key_source = label_match.group(1).strip()
+                    entry_text = label_match.group(2).strip() or item
+                else:
+                    key_source = item
+                    entry_text = item
+                out.append(r"\bibitem{" + bibliography_key(key_source, bibliography_index) + r"} " + inline_md_to_tex(entry_text))
+                bibliography_index += 1
+                i += 1
+                continue
             if not in_itemize:
                 out.append(r"\begin{itemize}[leftmargin=*]")
                 in_itemize = True
             out.append(r"\item " + inline_md_to_tex(s[2:].strip()))
+            last_list_item_index = len(out) - 1
             i += 1
             continue
         else:
             if in_itemize:
+                if (
+                    s
+                    and not re.match(r"^\d+\.\s+", s)
+                    and not s.startswith("> ")
+                    and not s.startswith("#")
+                    and not is_table_line(line)
+                    and s != "---"
+                    and last_list_item_index is not None
+                ):
+                    out[last_list_item_index] += " " + inline_md_to_tex(s)
+                    i += 1
+                    continue
                 out.append(r"\end{itemize}")
                 in_itemize = False
+                last_list_item_index = None
 
         # Blank lines
         if s == "":
             out.append("")
+            last_list_item_index = None
             i += 1
             continue
 
-        # Paragraph
-        out.append(inline_md_to_tex(s))
-        out.append("")
+        # Paragraphs may be hard-wrapped in markdown source; reflow them.
+        paragraph_lines = [s]
         i += 1
+        while i < len(lines) and not is_special_block_start(lines[i]):
+            paragraph_lines.append(lines[i].strip())
+            i += 1
+        out.append(inline_md_to_tex(" ".join(paragraph_lines)))
+        out.append("")
+        last_list_item_index = None
 
     if in_itemize:
         out.append(r"\end{itemize}")
@@ -343,6 +502,8 @@ def convert(md: str) -> str:
         out.append(r"\end{enumerate}")
     if in_quote:
         out.append(r"\end{quote}")
+    if in_bibliography:
+        out.append(r"\end{thebibliography}")
 
     out.append(r"\end{document}")
     tex = "\n".join(out) + "\n"

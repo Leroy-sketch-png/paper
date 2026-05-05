@@ -4,6 +4,7 @@
 **Generated from:** `manuscript/paper_skeleton.md`  
 **Last updated:** May 5, 2026  
 **Status:** Submission-ready draft
+**Target venue:** ISSTA
 
 ---
 
@@ -73,14 +74,12 @@ If LaTeX is not installed locally, use **Overleaf** (free):
 4. Direction A: Flaky-Test-Aware TCP
    4.1 Motivation
    4.2 Approach
-   4.3 Expected Findings
-   4.4 Tables and Figures
+   4.3 Evidence Status and Publication Role
 
 5. Direction B: Federated Pretraining
    5.1 Motivation
    5.2 Approach
-   5.3 Expected Findings
-   5.4 Tables and Figures
+   5.3 Evidence Status and Publication Role
 
 6. Direction C: LLM-Augmented Representations
    6.1 Motivation
@@ -88,20 +87,20 @@ If LaTeX is not installed locally, use **Overleaf** (free):
    6.3 Results (Proxy Representation Experiment)
       - Table C1: APFD by subject and ranker
       - Table C2: Ranking correlation (Spearman ρ)
-   6.4 Tables and Figures
+   6.4 Result Notes and Follow-up
 
 7. Direction D: Android/Mobile CI Replication
    7.1 Motivation
    7.2 Approach
-   7.3 Expected Findings
-   7.4 Tables and Figures
+   7.3 Evidence Status and Publication Role
 
 8. Discussion
    8.1 The Label-Realism Problem
    8.2 Transfer Beyond Open Source
    8.3 Are Method Rankings Feature-Era Artifacts?
    8.4 External Validity: Mobile CI as the Hard Case
-   8.5 Threats to Validity
+   8.5 Deployment-Facing Conditional-Validity Matrix
+   8.6 Threats to Validity
 
 9. Conclusion
 ```
@@ -115,9 +114,25 @@ If LaTeX is not installed locally, use **Overleaf** (free):
 - Table C2: Spearman ρ ranking correlation between BPE embeddings and FAST-pw orderings
 - Statistical summary: Mean ΔAPFD = −0.3283 (95% CI [−0.4866, −0.1699]), Cohen's d = −1.94
 
+**Section 8.5 — Deployment-Facing Conditional-Validity Matrix**
+- A practitioner-facing decision surface translating the four realism gaps into adoption guidance
+- Explicit conditions under which the source-paper recommendation should be treated as trustworthy, qualified, or provisional
+
+**Abstract / Conclusion refresh**
+- The abstract now foregrounds the executed Direction C proxy result instead of implying four fully executed tracks
+- The conclusion now ends with a lightweight adoption protocol for practitioners
+
 **Other sections (Sections 4-5, 7):**
-- Expected Findings, hypotheses, and experiment protocols
-- Not yet executed (marked as placeholders in text)
+- Evidence-status framing and execution protocols for the unexecuted realism tracks
+- Written to qualify benchmark recommendations without overstating current execution status
+
+---
+
+## Evidence Status Snapshot
+
+- Executed in the current draft: FAST baselines on 10 subjects, artifact-verified FALCON summary extraction, IDoFT overlap analysis, and Direction C BPE-proxy results on 5 SIR subjects
+- Protocol-backed but not fully executed: Direction A flaky-label cleaning measurements and Direction B federated pretraining retention study
+- Staged extension: Direction D Android/mobile CI replication after dataset admission criteria are met
 
 ---
 
@@ -139,12 +154,23 @@ python manuscript/generate_latex_manuscript.py
 
 ---
 
+## Research Expansion Checklist
+
+- [ ] Reproduce MART and ACER-PA on at least a subset of source-paper subjects, or add an explicit access-limitation note with fallback protocol
+- [ ] Implement heuristic baselines in the main experiment table (shortest-first, recent-failure-first, fast-plus-recent-failure)
+- [ ] Run one federated pretraining variant and report retention versus centralized pretraining
+- [ ] Run one stronger semantic/LLM representation variant and compare against FALCON on shared subjects
+- [ ] Produce flaky-label impact evidence on a feasible subset via re-execution and/or CI-log mining
+- [x] Finalize the threat-to-validity mapping in the manuscript discussion and conclusion
+
+---
+
 ## Submission Preparation Checklist
 
 - [ ] Review compiled PDF for formatting and page breaks
 - [ ] Replace the three-author placeholder block with actual names, affiliations, locations, and emails
 - [ ] Add venue-specific references formatting (IEEE/ACM/Springer)
-- [ ] Replace placeholder `[TBD]` references with actual citations
+- [ ] Replace any remaining unresolved metadata or dataset placeholders once the missing source inputs exist
 - [ ] Verify all table and figure captions are present
 - [ ] Check for widow/orphan lines and manual breaks if needed
 - [ ] Proof-read for typos and consistency

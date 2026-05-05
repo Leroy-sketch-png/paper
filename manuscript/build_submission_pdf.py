@@ -12,6 +12,13 @@ TEX = HERE / "paper_manuscript.tex"
 PDF = HERE / "paper_manuscript.pdf"
 
 
+def clean_latex_intermediates() -> None:
+    for suffix in (".aux", ".out", ".toc"):
+        candidate = TEX.with_suffix(suffix)
+        if candidate.exists():
+            candidate.unlink()
+
+
 def run_command(command: list[str], cwd: Path) -> None:
     subprocess.run(command, cwd=cwd, check=True)
 
@@ -72,6 +79,9 @@ def main() -> None:
         raise SystemExit(
             "No LaTeX engine found. Install pdflatex or xelatex, or compile manuscript/paper_manuscript.tex in Overleaf."
         )
+
+    if tex_changed:
+        clean_latex_intermediates()
 
     compile_command = [engine, "-interaction=nonstopmode", "-halt-on-error", TEX.name]
     run_command(compile_command, cwd=HERE)

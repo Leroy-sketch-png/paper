@@ -322,6 +322,8 @@ Nhưng bài báo bổ sung một tầng rất quan trọng: **tầng qualificati
 
 Nói một cách trực diện, trước bài báo này, ta có benchmark và khuyến nghị. Sau bài báo này, ta có benchmark, khuyến nghị, và điều kiện để biết khi nào những khuyến nghị đó thật sự đáng tin.
 
+Điểm mà manuscript hiện tại đã chốt rất mạnh ở phần thảo luận là một **deployment-facing conditional-validity matrix**. Ma trận này không hỏi “ai thắng tuyệt đối”, mà hỏi “trong điều kiện CI của mình, mình có quyền tin benchmark đến đâu”. Nếu môi trường gần với benchmark gốc, ta có thể dùng khuyến nghị đó với một bước kiểm tra nhẹ tại chỗ. Nhưng nếu flakiness cao, dữ liệu không được phép pooling, representation đã đổi sang semantic space, hoặc workload đã chuyển sang long-running hay mobile CI, thì khuyến nghị phải bị hạ cấp từ mặc định sang **provisional** cho đến khi có local stress test.
+
 Đó chính là giá trị thực tiễn lớn nhất của conditional-validity map.
 
 ---
@@ -339,6 +341,8 @@ Nói một cách trực diện, trước bài báo này, ta có benchmark và kh
 
 **Thông điệp ba:** đóng góp lớn nhất của bài báo này là nâng chuẩn đánh giá ML-TCP từ leaderboard construction lên **conditional-validity certification**.
 
+Nếu cần rút toàn bộ bài báo về một quy tắc triển khai rất ngắn, thì quy tắc đó là: trước khi mang một khuyến nghị ML-TCP đi deploy, hãy hỏi bốn câu. Nhãn fail có sạch không. Dữ liệu có được phép pooling không. Representation có đổi không. Và workload thực tế có còn giống benchmark không. Chỉ cần một câu trả lời là “chưa rõ”, thì benchmark recommendation phải được xem là điều kiện hóa, không phải mặc định.
+
 Với manuscript hiện tại, phần executed mạnh nhất nằm ở Direction C, và kết quả ở đó cho thấy một điểm rất rõ: proxy embedding ở mức BPE token-level thua đáng kể FAST-pw trên 5 SIR subjects. Điều đó không đóng cánh cửa của semantic representations; điều đó buộc chúng ta phải phân biệt rành mạch giữa weak proxy và strong contextual representation.
 
 Tổng kết lại, bài báo này không nổi bật vì đề xuất một model mới. Bài báo nổi bật vì nó đưa ra một **bản đồ độ tin cậy có điều kiện** cho những khuyến nghị của benchmark ML-TCP mạnh nhất hiện nay.
@@ -349,13 +353,13 @@ Em xin cảm ơn thầy cô và các bạn. Sau đây em rất sẵn sàng cho p
 
 ## Bản rút gọn 30 giây để mở đầu nếu cần
 
-Xin chào mọi người. Hôm nay em trình bày một bài báo xem xét lại benchmark ML-based TCP trong CI dưới bốn realism constraints: label realism, data governance, representation shift và external validity. Câu hỏi trung tâm của bài báo không phải là ai thắng benchmark, mà là khi nào khuyến nghị từ benchmark còn đủ mạnh để đem đi deploy. Kết quả executed rõ nhất hiện tại đến từ Direction C, nơi BPE-proxy embeddings thua đáng kể FAST-pw trên 5 SIR subjects. Đóng góp trung tâm của bài báo là một conditional-validity map cho các khuyến nghị benchmark.
+Xin chào mọi người. Hôm nay em trình bày một bài báo xem xét lại benchmark ML-based TCP trong CI dưới bốn realism constraints: label realism, data governance, representation shift và external validity. Câu hỏi trung tâm của bài báo không phải là ai thắng benchmark, mà là khi nào khuyến nghị từ benchmark còn đủ mạnh để đem đi deploy. Kết quả executed rõ nhất hiện tại đến từ Direction C, nơi BPE-proxy embeddings thua đáng kể FAST-pw trên 5 SIR subjects. Đóng góp trung tâm của bài báo là một conditional-validity map, cụ thể hóa thành một ma trận quyết định giúp phân biệt khuyến nghị nào có thể dùng ngay và khuyến nghị nào còn phải stress-test tại chỗ.
 
 ---
 
 ## Bản rút gọn 45 giây để kết thúc nếu hết giờ
 
-Nếu chỉ giữ lại một ý, thì đó là: **một benchmark result chưa đủ để trở thành deployment recommendation**. Bài báo này bổ sung lớp qualification cần thiết thông qua bốn realism gaps. Nó không phủ định benchmark gốc, mà xác định rõ miền mà benchmark còn đáng tin. Kết quả thực nghiệm hiện tại ở Direction C cho thấy representation proxy yếu có thể dẫn tới kết luận rất khác so với handcrafted baselines, và chính điều đó làm nổi bật giá trị của conditional-validity map. Em xin cảm ơn.
+Nếu chỉ giữ lại một ý, thì đó là: **một benchmark result chưa đủ để trở thành deployment recommendation**. Bài báo này bổ sung lớp qualification cần thiết thông qua bốn realism gaps và biến nó thành một ma trận quyết định cho triển khai. Nó không phủ định benchmark gốc, mà xác định rõ miền mà benchmark còn đáng tin. Kết quả thực nghiệm hiện tại ở Direction C cho thấy representation proxy yếu có thể dẫn tới kết luận rất khác so với handcrafted baselines, và chính điều đó làm nổi bật giá trị của conditional-validity map. Em xin cảm ơn.
 
 ---
 
